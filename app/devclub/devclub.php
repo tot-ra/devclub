@@ -6,7 +6,15 @@
 
 class devclub extends Controller {
 
-    private $usersCanReorder = array('artkurapov@gmail.com');
+    private $usersCanReorder = array(
+	    'soswow@gmail.com',
+	    'ant.arhipov@gmail.com',
+	    'jevgeni.holodkov@gmail.com',
+	    'yuri.mulenko@gmail.com',
+	    'draco.ater@gmail.com',
+	    'kirill.linnik@mail.ee',
+	    'andrei.solntsev@gmail.com'
+    );
 
     private function getEmail() {
         return $_SESSION[__CLASS__]['auth_email'];
