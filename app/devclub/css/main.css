@@ -1,0 +1,47 @@
+/**
+ * @author Artjom Kurapov
+ * @since 20.06.12 16:25
+ **/
+.col h1{
+    background-color: #dadada;
+    padding:0 10px;
+}
+
+.sortable{
+    margin: 0;
+    padding: 0;
+}
+.sortable li{
+    list-style: none;
+    padding: 5px 10px;
+    margin: 2px;
+    border: 1px solid rgba(0, 158, 248, 0.41);
+    background-color: rgba(0, 164, 255, 0.11);
+    cursor: default;
+    border-radius: 3px;
+}
+
+.sortable .vote{
+    display: none;
+}
+.sortable li.voted{
+    border: 1px solid #f4d313;
+    background-color: #fff9dc;
+}
+
+.sortable li .icon-pencil{
+    cursor: pointer;
+    float:right;
+    opacity: 0.2;
+    margin: 2px 4px 0 0;
+}
+
+.sortable li .icon-pencil:hover{
+    opacity: 0.4;
+}
+
+@media (max-width: 480px){
+    .row-fluid .span4{
+        width:100%;
+    }
+}
