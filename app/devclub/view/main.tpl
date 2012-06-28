@@ -3,7 +3,7 @@
 </head>
 <body>
 
-<div class="navbar">
+<div id="navbar" class="navbar">
 	<div class="navbar-inner">
 		<div class="container">
 			<a class="brand" href="#">Devclub backlog</a>
@@ -34,31 +34,43 @@
 </div>
 
 <section class="row-fluid">
-	<div class="col span4"><h1>Темы</h1>
-	{if !$email}
-		<div class="alert alert-info">
-			<button class="close" data-dismiss="alert">×</button>
-			<a href="#" class="login label label-info">Sign in</a> with Mozilla BrowserID to add new presentation.<br/>
-			<i class="icon-resize-vertical"></i>Then you <strong>can vote</strong> by reordering list below
-		</div>
-
-		{elseif !$voted}
-		<div class="alert alert-info">
-			<button class="close" data-dismiss="alert">×</button>
-			<i class="icon-resize-vertical"></i>You <strong>can vote</strong> by reordering this list
-		</div>
-
-	{/if}
+	<div class="col span4" style="{if !$email}display: none;{/if}">
+		<h1>Мой рейтинг тем</h1>
 
 		<ul id="icebox" class="sortable"></ul>
 	</div>
 
-	<div class="col span4"><h1>В подготовке</h1>
-		<ul id="backlog" class="sortable"></ul>
+	<div class="span4">
+		<div class="col">
+			<h1>Публичный рейтинг <a rel="tooltip" title="JSON API source" href="/devclub/list_public_stories/"><img src="/app/devclub/img/json_icon.png"></a></h1>
+
+			{if !$email}
+				<div class="alert alert-info">
+					<button class="close" data-dismiss="alert">×</button>
+					Sign in with Mozilla BrowserID to add new presentation.
+					You <strong>can vote</strong> also by ordering <i class="icon-resize-vertical"></i> list items
+				</div>
+
+				{elseif !$voted}
+				<div class="alert alert-info">
+					<button class="close" data-dismiss="alert">×</button>
+					<i class="icon-resize-vertical"></i>You <strong>can vote</strong> by reordering this list
+				</div>
+			{/if}
+
+			<ul id="public"></ul>
+		</div>
 	</div>
 
-	<div class="col span4"><h1>Выступили</h1>
-		<ul id="current" class="sortable"></ul>
+
+	<div class="span4">
+		<div class="col"><h1>В подготовке</h1>
+			<ul id="backlog" class="sortable"></ul>
+		</div>
+
+		<div class="col"><h1>Выступили</h1>
+			<ul id="current" class="sortable"></ul>
+		</div>
 	</div>
 
 </section>
@@ -87,23 +99,30 @@
 
 	<% if(typeof(owner)!='undefined'){ %>
 
-	<a class="close" href="#">&times;</a>
-	<i class="icon-pencil"></i>
-	<% } %>
-
 	<% if(status=='icebox'){ %>
 	<a class="vote btn btn-mini" href="#">Vote</a>
 	<% } %>
 
-	<% if(rate) { %><span class="badge badge-success" style="float:right;" rel="tooltip"
-						  title="average position, based on <%=votes%> vote<% if(votes>1){%>s<%}%>"><%=rate%></span> <%
+	<a class="close" href="#">&times;</a>
+	<i class="icon-pencil"></i>
+	<% } %>
+
+
+	<span class="badge" rel="tooltip" title="duration in minutes"><i class="icon-time"></i> <%=duration%></span>
+
+	<% if(rate) { %>
+		<span class="badge" rel="tooltip" title="number of votes"><i class="icon-user"></i> <%=votes%></span>
+		<span class="badge badge-success" rel="tooltip" title="average position"><%=rate%></span>
+	<%
 	} %>
 
-	<strong><%=title%></strong>
+
+
+
+	<strong><%=title%></strong> &mdash; <%=authors%>
 
 	<div style="display:none;" class="extra">
 		<em style="padding:5px 0; display:block;"><%=description%></em>
-		<i class="icon-user"></i> <%=authors%> | <i class="icon-time"></i> <%=duration%> min
 	</div>
 </script>
 {/literal}

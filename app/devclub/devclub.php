@@ -6,7 +6,7 @@
 
 class devclub extends Controller {
 
-    private $usersCanReorder = array(
+    private $admins = array(
 	    'soswow@gmail.com',
 	    'ant.arhipov@gmail.com',
 	    'jevgeni.holodkov@gmail.com',
@@ -26,7 +26,7 @@ class devclub extends Controller {
         $this->add_css('main.css');
         $this->add_css('/cms/external_libraries/jquery_ui/ui-lightness/jquery-ui-1.8.10.custom.css', false);
 
-        $this->add_js('https://browserid.org/include.js');
+        $this->add_js('https://browserid.org/include.js', false);
 
         $this->add_js('/cms/external_libraries/jquery/1.7.1.js');
         $this->add_js('bootstrap.min.js');
@@ -68,16 +68,15 @@ class devclub extends Controller {
         if ($ID) {
             $story = $stories->obj($ID);
 
-            if (!$this->canReorder()) {
+            if (!$this->checkAdmin()) {
                 unset($params['status']);
             }
             unset($params['creator_email']);
 
-            if($params['title']){
-                $params['title'] = htmlentities ($params['title'], ENT_COMPAT, 'UTF-8');
-                $params['authors'] = htmlentities ($params['authors'], ENT_COMPAT, 'UTF-8');
-                $params['description'] = htmlentities ($params['description'], ENT_COMPAT, 'UTF-8');
-            }
+            if($params['title']) $params['title'] = htmlentities ($params['title'], ENT_COMPAT, 'UTF-8');
+            if($params['authors']) $params['authors'] = htmlentities ($params['authors'], ENT_COMPAT, 'UTF-8');
+            if($params['description']) $params['description'] = htmlentities ($params['description'], ENT_COMPAT, 'UTF-8');
+
 
             if ($params) {
                 $stories->update($params, "ID='$ID'");
@@ -138,14 +137,16 @@ class devclub extends Controller {
             "*, '' votes, '' rate, '0' voted, '' position"));
     }
 
-    function list_icebox_stories() {
+    function list_public_stories() {
         $stories = new Model('devclub_story');
         $vote = new Model('devclub_vote');
+
+	    $sort = ($_GET['sort'] == 'mine' ? 't3.position ASC' :  'avgPosition ASC');
 
         $list = $stories->arr(
             "status='icebox'
             GROUP BY t1.ID
-            ORDER BY isnull ASC, isnull2 ASC, t3.position ASC, avgPosition ASC",
+            ORDER BY isnull ASC, isnull2 ASC, ".$sort,
 
             "t1.*, AVG(t2.position) avgPosition, t3.position IS NULL AS isnull, AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id",
 
@@ -169,7 +170,7 @@ class devclub extends Controller {
         $ID = (int)$input->PID[3];
         $stories = new Model('devclub_story');
         $story = $stories->obj($ID);
-        if ($story && ($this->canReorder() || $story->creator_email == $this->getEmail())) {
+        if ($story && ($this->checkAdmin() || $story->creator_email == $this->getEmail())) {
             $stories->delete($ID);
         }
     }
@@ -208,17 +209,20 @@ class devclub extends Controller {
 
         if ($json->status == 'okay') {
             $_SESSION[__CLASS__]['auth_email'] = $json->email;
-            // the user logged in successfully.
-        }
-        else {
-            // log in failed.
         }
 
-        echo $result;
+        $this->user();
     }
 
-    function canReorder() {
-        return in_array($this->getEmail(), $this->usersCanReorder);
+    function user(){
+        echo json_encode(array(
+            'email'=> $this->getEmail(),
+            'isAdmin'=>$this->checkAdmin()
+        ));
+    }
+
+    function checkAdmin() {
+        return in_array($this->getEmail(), $this->admins);
     }
 
     function author_list(){

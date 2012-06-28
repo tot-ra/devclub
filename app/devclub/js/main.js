@@ -5,23 +5,31 @@ var Devclub = {
     Models: []
 };
 $(document).ready(function () {
-/*
-    Devclub.Routers.Main = Backbone.Router.extend({
-        routes: {
-            "": "void",
-            "add_story": "add_story"
-        },
-        void: function () {
-        },
+    /*
+     Devclub.Routers.Main = Backbone.Router.extend({
+     routes: {
+     "": "void",
+     "add_story": "add_story"
+     },
+     void: function () {
+     },
 
-        add_story: function () {
-            alert(1);
-        }
-    });*/
+     add_story: function () {
+     alert(1);
+     }
+     });*/
 
+
+    //Models
     Devclub.Models.Story = Backbone.Model.extend({
         url: function () {
             return sys_url + 'story/' + (this.isNew() ? '' : this.id);
+        }
+    });
+
+    Devclub.Models.User = Backbone.Model.extend({
+        url: function () {
+            return sys_url + 'user/';
         }
     });
 
@@ -40,11 +48,91 @@ $(document).ready(function () {
 
     Devclub.Collections.IceboxStories = Backbone.Collection.extend({
         url: function () {
-            return sys_url + 'list_icebox_stories/';
+            return sys_url + 'list_public_stories/?sort=mine';
+        }
+    });
+
+    Devclub.Collections.PublicStories = Backbone.Collection.extend({
+        url: function () {
+            return sys_url + 'list_public_stories/?sort=public';
         }
     });
 
     //Views
+    Devclub.Views.NavBar = Backbone.View.extend({
+        el: '#navbar',
+        events: {
+            'click .login': 'login',
+            'click #logout': 'logout'
+        },
+
+        initialize: function () {
+            var view = this;
+
+            this.model.fetch({
+                complete: function () {
+                    if (view.model.get('email')) {
+                        makeSortable(view.model.get('isAdmin'));
+                    }
+                }
+            });
+        },
+
+
+        login: function () {
+            var view = this;
+            navigator.id.get(function (assertion) {
+                // got an assertion, now send it up to the server for verification
+                if (assertion !== null) {
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+
+                        url: sys_url + 'devclub/login/',
+                        data: { assertion: assertion },
+                        success: function (res, status, xhr) {
+
+                            if (res === null) {
+                            }//loggedOut();
+                            else {
+                                $('#icebox .vote').show();
+                                $('.login').hide();
+                                $('.login').parents('.alert:first').hide();
+                                $('#story_form').show();
+                                $('#logout').show();
+                                $('#mail').html(res.email);
+
+                                $('#icebox').parents('.col').show();
+
+                                view.model = new Devclub.Models.User(res);
+
+                                Devclub.iceboxStoriesListView.collection.fetch();
+
+                                makeSortable(view.model.get('isAdmin'));
+                                //loggedIn(res);
+                            }
+                        },
+                        error: function (res, status, xhr) {
+                            alert("login failure" + res);
+                        }
+                    });
+                } else {
+                    //loggedOut();
+                }
+
+            });
+            return false;
+        },
+
+        logout: function () {
+            navigator.id.logout();
+            $.get(sys_url + 'devclub/logout/', function () {
+                window.location.reload();
+            });
+
+        }
+    });
+
     Devclub.Views.AddForm = Backbone.View.extend({
         el: '#story_form',
         events: {
@@ -54,7 +142,7 @@ $(document).ready(function () {
 
         modelID: null,
 
-        edit: function(m){
+        edit: function (m) {
             $('.btn-primary', this.el).html('Save');
             $('.btn-cancel', this.el).show();
             $('input[name=title]', this.el).val(m.get('title'));
@@ -63,7 +151,7 @@ $(document).ready(function () {
             this.modelID = m.get('ID');
         },
 
-        reset: function(){
+        reset: function () {
             $(this.el).each(function () {
                 this.reset();
             });
@@ -75,12 +163,12 @@ $(document).ready(function () {
 
         submit: function () {
 
-            if($('input[name=title]', this.el).val().length<2){
+            if ($('input[name=title]', this.el).val().length < 2) {
                 $('.alert-error p').html('Make up a title for your story');
                 $('.alert-error').slideDown();
                 return false;
             }
-            if($('input[name=authors]', this.el).val().length<2){
+            if ($('input[name=authors]', this.el).val().length < 2) {
                 $('.alert-error p').html('Introduce yourself.. or whoever is going to talk');
                 $('.alert-error').slideDown();
                 return false;
@@ -92,30 +180,23 @@ $(document).ready(function () {
             var view = this;
 
             var data = {
-                            'title': $('input[name=title]', this.el).val(),
-                            'authors': $('input[name=authors]', this.el).val(),
-                            'description': $('textarea:first', this.el).val(),
-                            'duration': $('select', this.el).val()
-                        };
+                'title': $('input[name=title]', this.el).val(),
+                'authors': $('input[name=authors]', this.el).val(),
+                'description': $('textarea:first', this.el).val(),
+                'duration': $('select', this.el).val()
+            };
 
-            if(this.modelID){
+            if (this.modelID) {
                 data.id = this.modelID;
             }
 
             m.save(data, {
-                success: function(model){
-                    model = new Devclub.Models.Story(model);
-                    model.set({
-                        owner: true,
-                        voted: 0,
-                        votes: '',
-                        rate: ''
-                    });
-
-                    var row = new Devclub.Views.Story({model: model});
-                    $('#icebox').append(row.render().el);
+                complete: function (model) {
+                    Devclub.iceboxStoriesListView.collection.fetch();
+                    Devclub.PublicStoriesListView.collection.fetch();
 
                     view.reset();
+                    view.modelID = null;
                 }
             });
 
@@ -138,9 +219,9 @@ $(document).ready(function () {
 
             $('*[rel=tooltip]', this.el).tooltip();
 
-			if($('#mail').text()!=''){
-				$('.vote').show();
-			}
+            if ($('#mail').text() != '') {
+                $('#icebox .vote').show();
+            }
         },
 
         add: function (model) {
@@ -170,6 +251,10 @@ $(document).ready(function () {
         el: '#icebox'
     });
 
+    Devclub.Views.PublicStoriesList = Devclub.Views.StoriesList.extend({
+        el: '#public'
+    });
+
     Devclub.Views.Story = Backbone.View.extend({
         tagName: 'li',
         template: _.template($("#story_item_template").html()),
@@ -180,30 +265,33 @@ $(document).ready(function () {
             'click .vote': 'vote'
         },
 
-        slide: function(){
-          $('.extra',this.el).slideToggle();
+        slide: function () {
+            $('.extra', this.el).slideToggle();
         },
 
-		deleteStory: function(){
+        deleteStory: function () {
             var view = this;
-            $.get(sys_url + 'devclub/delete_story/'+this.model.get('ID'),function(){
+            $.get(sys_url + 'devclub/delete_story/' + this.model.get('ID'), function () {
                 view.remove();
+                Devclub.iceboxStoriesListView.collection.fetch();
+                Devclub.PublicStoriesListView.collection.fetch();
             });
         },
 
 
-		vote: function(){
-		   this.model.save({
-				   'position': 0
-			   },{
-			   complete: function(model, response){
-				   Devclub.iceboxStoriesListView.collection.fetch();
-			   }
-		   });
-			return false;
-		},
+        vote: function () {
+            this.model.save({
+                'position': 0
+            }, {
+                complete: function (model, response) {
+                    Devclub.iceboxStoriesListView.collection.fetch();
+                    Devclub.PublicStoriesListView.collection.fetch();
+                }
+            });
+            return false;
+        },
 
-        edit: function(){
+        edit: function () {
             Devclub.addView.edit(this.model);
             return false;
         },
@@ -211,19 +299,19 @@ $(document).ready(function () {
         render: function () {
             var tplvars = this.model.toJSON();
 
-            if(tplvars.creator_email == $('#mail').text()){
-                tplvars.owner=true;
+            if (this.model.get('creator_email') == Devclub.NavBar.model.get('email') || Devclub.NavBar.model.get('isAdmin')) {
+                tplvars.owner = true;
             }
 
-            if(tplvars.description!=null){
-                tplvars.description = tplvars.description.replace(/\n/g,'<br />');
+            if (tplvars.description != null) {
+                tplvars.description = tplvars.description.replace(/\n/g, '<br />');
             }
 
             var html = this.template(tplvars);
 
-			$(this.el).html(html);
+            $(this.el).html(html);
 
-            if(this.model.get('voted')>0){
+            if (this.model.get('voted') > 0) {
                 $(this.el).addClass('voted');
             }
 
@@ -232,7 +320,12 @@ $(document).ready(function () {
         }
     });
 
-    //Devclub.router = new Devclub.Routers.Main();
+
+    //Instances
+    Devclub.NavBar = new Devclub.Views.NavBar({
+        model: new Devclub.Models.User()
+    });
+
     Devclub.addView = new Devclub.Views.AddForm();
 
     Devclub.currentStoriesListView = new Devclub.Views.CurrentStoriesList({
@@ -247,60 +340,15 @@ $(document).ready(function () {
         collection: new Devclub.Collections.IceboxStories()
     });
 
+    Devclub.PublicStoriesListView = new Devclub.Views.PublicStoriesList({
+        collection: new Devclub.Collections.PublicStories()
+    });
+
     //Backbone.history.start();
 
-    $('.login').click(function () {
-        navigator.id.get(function (assertion) {
-            // got an assertion, now send it up to the server for verification
-            if (assertion !== null) {
-                $.ajax({
-                    type: 'POST',
-                    dataType: 'json',
 
-                    url: sys_url + 'devclub/login/',
-                    data: { assertion: assertion },
-                    success: function (res, status, xhr) {
-
-                        if (res === null) {
-                        }//loggedOut();
-                        else {
-                            $('.vote').show();
-                            $('.login').hide();
-                            $('.login').parents('.alert:first').hide();
-                            $('#story_form').show();
-                            $('#logout').show();
-                            $('#mail').html(res.email);
-
-                            Devclub.iceboxStoriesListView.collection.fetch();
-
-                            makeSortable();
-                            //loggedIn(res);
-                        }
-                    },
-                    error: function (res, status, xhr) {
-                        alert("login failure" + res);
-                    }
-                });
-            } else {
-                //loggedOut();
-            }
-
-        });
-        return false;
-    });
-
-    $('#logout').click(function(){
-        navigator.id.logout();
-        $.get(sys_url + 'devclub/logout/', function(){
-            window.location.reload();
-        });
-
-    });
-
-
-    function makeSortable(){
+    function makeSortable(crosslist) {
         var opt = {
-
             stop: function (event, ui) {
                 //$(ui.item).parent().attr('id');
                 var model = new Devclub.Models.Story({
@@ -309,34 +357,28 @@ $(document).ready(function () {
                 model.fetch();
 
                 model.save({
-                        'status': $(ui.item).parent().attr('id'),
-                        'position': $(ui.item).index()
-                    },{
-                    complete: function(model, response){
+                    'status': $(ui.item).parent().attr('id'),
+                    'position': $(ui.item).index()
+                }, {
+                    complete: function (model, response) {
                         Devclub.iceboxStoriesListView.collection.fetch();
+                        Devclub.PublicStoriesListView.collection.fetch();
                     }
                 });
-
-
             }
         };
 
-        if($('#mail').html() == 'artkurapov@gmail.com'){
+        if (crosslist) {
             opt.connectWith = ".sortable";
         }
-        $('.row-fluid ul').sortable(opt).disableSelection();
+        $('.sortable').sortable(opt).disableSelection();
     }
 
 
-    $( "#story_form input[name=authors]" ).autocomplete({
-        source: sys_url+"devclub/author_list",
+    $("#story_form input[name=authors]").autocomplete({
+        source: sys_url + "devclub/author_list",
         minLength: 2,
-        select: function( event, ui ) {
+        select: function (event, ui) {
         }
     });
-
-    if($('#mail').text()!=''){
-		makeSortable();
-    }
-
 });
