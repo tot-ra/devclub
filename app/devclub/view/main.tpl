@@ -36,7 +36,12 @@
 <section class="row-fluid">
 	<div class="col span4" style="{if !$email}display: none;{/if}">
 		<h1>Мой рейтинг тем</h1>
-
+		{if !$voted}
+			<div class="alert alert-info">
+				<button class="close" data-dismiss="alert">×</button>
+				You <strong>can vote</strong> also by ordering <i class="icon-resize-vertical"></i> list items
+			</div>
+		{/if}
 		<ul id="icebox" class="sortable"></ul>
 	</div>
 
@@ -48,13 +53,6 @@
 				<div class="alert alert-info">
 					<button class="close" data-dismiss="alert">×</button>
 					Sign in with Mozilla BrowserID to add new presentation.
-					You <strong>can vote</strong> also by ordering <i class="icon-resize-vertical"></i> list items
-				</div>
-
-				{elseif !$voted}
-				<div class="alert alert-info">
-					<button class="close" data-dismiss="alert">×</button>
-					<i class="icon-resize-vertical"></i>You <strong>can vote</strong> by reordering this list
 				</div>
 			{/if}
 
@@ -97,11 +95,12 @@
 {literal}
 <script type="text/template" id="story_item_template">
 
-	<% if(typeof(owner)!='undefined'){ %>
 
 	<% if(status=='icebox'){ %>
 	<a class="vote btn btn-mini" href="#">Vote</a>
 	<% } %>
+
+	<% if(typeof(owner)!='undefined'){ %>
 
 	<a class="close" href="#">&times;</a>
 	<i class="icon-pencil"></i>

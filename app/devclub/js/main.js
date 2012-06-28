@@ -219,7 +219,7 @@ $(document).ready(function () {
 
             $('*[rel=tooltip]', this.el).tooltip();
 
-            if ($('#mail').text() != '') {
+            if (Devclub.NavBar.model.get('email') != '') {
                 $('#icebox .vote').show();
             }
         },
@@ -354,17 +354,17 @@ $(document).ready(function () {
                 var model = new Devclub.Models.Story({
                     id: $(ui.item).data('sid')
                 });
-                model.fetch();
+				model.save({
+					'status': $(ui.item).parent().attr('id'),
+					'position': $(ui.item).index()
+				}, {
+					complete: function (model, response) {
+						Devclub.iceboxStoriesListView.collection.fetch();
+						Devclub.PublicStoriesListView.collection.fetch();
+					}
+				});
 
-                model.save({
-                    'status': $(ui.item).parent().attr('id'),
-                    'position': $(ui.item).index()
-                }, {
-                    complete: function (model, response) {
-                        Devclub.iceboxStoriesListView.collection.fetch();
-                        Devclub.PublicStoriesListView.collection.fetch();
-                    }
-                });
+
             }
         };
 
