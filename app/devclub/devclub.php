@@ -16,6 +16,9 @@ class devclub extends Controller {
 		'andrei.solntsev@gmail.com'
 	);
 
+    public $db_adapter_config = 2;
+    public $load_config = false;
+
 
 	private function getEmail() {
 		return $_SESSION[__CLASS__]['auth_email'];
@@ -40,7 +43,7 @@ class devclub extends Controller {
 		$this->add_js('touch-punch.js');
 		$this->add_js('main.js');
 
-		$this->add_js_var('sys_url', sys_url . 'devclub/');
+		$this->add_js_var('sys_url', sys_relative_url . 'devclub/');
 
 		$this->smarty('email', $this->getEmail());
 
@@ -67,6 +70,7 @@ class devclub extends Controller {
 		$status   = $params['status'];
 		unset($params['position']);
 
+
 		$ID = (int)$input->PID[3];
 		if ($ID) {
 			$story = $stories->obj($ID);
@@ -75,6 +79,11 @@ class devclub extends Controller {
 				unset($params['status']);
 			}
 			unset($params['creator_email']);
+
+
+			if($params['duration']=='0'){
+				$params['status'] = 'openspace';
+			}
 
 			if ($params['title']) {
 				$params['title'] = htmlentities($params['title'], ENT_COMPAT, 'UTF-8');
@@ -94,13 +103,24 @@ class devclub extends Controller {
 			echo json_encode($story);
 		}
 		else {
-			$ID = $stories->insert(array(
-			                            'title'         => htmlentities($params['title'], ENT_COMPAT, 'UTF-8'),
-			                            'authors'       => htmlentities($params['authors'], ENT_COMPAT, 'UTF-8'),
-			                            'description'   => htmlentities($params['description'], ENT_COMPAT, 'UTF-8'),
-			                            'duration'      => (int)$params['duration'],
-			                            'creator_email' => $this->getEmail()
-			                       ));
+
+			if($params['duration']=='0'){
+				$status = 'openspace';
+			}
+			else{
+				$status = 'icebox';
+			}
+
+			$ID = $stories->insert(
+				array(
+                    'title'         => htmlentities($params['title'], ENT_COMPAT, 'UTF-8'),
+                    'authors'       => htmlentities($params['authors'], ENT_COMPAT, 'UTF-8'),
+                    'description'   => htmlentities($params['description'], ENT_COMPAT, 'UTF-8'),
+                    'duration'      => (int)$params['duration'],
+                    'status'        => $status,
+                    'creator_email' => $this->getEmail()
+               )
+			);
 
 			$story = $stories->obj($ID);
 		}
@@ -154,9 +174,9 @@ class devclub extends Controller {
 	}
 
 
-	function list_current_stories() {
+	function list_openspace_stories() {
 		$stories = new Model('devclub_story');
-		echo json_encode($stories->arr("status='current'",
+		echo json_encode($stories->arr("status='openspace'",
 			"*, '' votes, '' rate, '0' voted, '' position"));
 	}
 

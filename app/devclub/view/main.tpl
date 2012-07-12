@@ -35,24 +35,29 @@
 
 <section class="row-fluid">
 	<div class="col span4" style="{if !$email}display: none;{/if}">
-		<h1>Мой рейтинг тем</h1>
+		<h1>Интересные мне</h1>
 		{if !$voted}
 			<div class="alert alert-info">
 				<button class="close" data-dismiss="alert">×</button>
-				You <strong>can vote</strong> also by ordering <i class="icon-resize-vertical"></i> list items
+				За эти темы, о которых авторы готовы рассказать, <strong>можно голосовать</strong> упорядочивая <i class="icon-resize-vertical"></i> список согласно вашему интересу
 			</div>
 		{/if}
+
+		<div class="alert alert-error isAdmin" style="display: none;">
+			<button class="close" data-dismiss="alert">×</button>
+			Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответсвенности, spiderman
+		</div>
 		<ul id="icebox" class="sortable"></ul>
 	</div>
 
 	<div class="span4">
 		<div class="col">
-			<h1>Публичный рейтинг <a rel="tooltip" title="JSON API source" href="/devclub/list_public_stories/"><img src="/app/devclub/img/json_icon.png"></a></h1>
+			<h1>Интересные всем <a rel="tooltip" title="JSON API source" href="/devclub/list_public_stories/"><img src="/app/devclub/img/json_icon.png"></a></h1>
 
 			{if !$email}
 				<div class="alert alert-info">
 					<button class="close" data-dismiss="alert">×</button>
-					Sign in with Mozilla BrowserID to add new presentation.
+					Войдите с Mozilla BrowserID что-бы добавить новую тему
 				</div>
 			{/if}
 
@@ -63,11 +68,19 @@
 
 	<div class="span4">
 		<div class="col"><h1>В подготовке</h1>
+			<div class="alert alert-info">
+				<button class="close" data-dismiss="alert">×</button>
+				Сюда попадают отобранные организаторами темы
+			</div>
 			<ul id="backlog" class="sortable"></ul>
 		</div>
 
-		<div class="col"><h1>Выступили</h1>
-			<ul id="current" class="sortable"></ul>
+		<div class="col"><h1>Хочется послушать</h1>
+			<div class="alert alert-info">
+				<button class="close" data-dismiss="alert">×</button>
+				Темы которые вы бы хотели услышать, как вариант - темы для <strong>openspace</strong>
+			</div>
+			<ul id="openspace" class="sortable"></ul>
 		</div>
 	</div>
 
@@ -84,6 +97,7 @@
 	<select name="duration">
 		<option value="40">40 min</option>
 		<option value="5">5 min</option>
+		<option value="0">openspace</option>
 	</select>
 
 	<textarea name="description" placeholder="Description" style="width:100%;height: 110px;"></textarea>
@@ -91,6 +105,7 @@
 	<a href="#" class="btn btn-primary">Add story</a>
 	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
 </form>
+
 
 {literal}
 <script type="text/template" id="story_item_template">

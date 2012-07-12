@@ -29,6 +29,9 @@ section li.voted{
     background-color: #fff9dc;
 }
 
+#icebox li{
+    cursor:move;
+}
 
 #public li .badge{
     float:right;
@@ -38,6 +41,7 @@ section li.voted{
     margin-left: 5px;
 }
 
+#openspace li .badge,
 #icebox li .badge,
 #public li .icon-pencil,
 #public li .vote,

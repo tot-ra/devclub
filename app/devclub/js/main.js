@@ -34,9 +34,9 @@ $(document).ready(function () {
     });
 
     //Collections
-    Devclub.Collections.CurrentStories = Backbone.Collection.extend({
+    Devclub.Collections.ActiveStories = Backbone.Collection.extend({
         url: function () {
-            return sys_url + 'list_current_stories/';
+            return sys_url + 'list_openspace_stories/';
         }
     });
 
@@ -52,7 +52,7 @@ $(document).ready(function () {
         }
     });
 
-    Devclub.Collections.PublicStories = Backbone.Collection.extend({
+    Devclub.Collections.CompletedStories = Backbone.Collection.extend({
         url: function () {
             return sys_url + 'list_public_stories/?sort=public';
         }
@@ -71,6 +71,10 @@ $(document).ready(function () {
 
             this.model.fetch({
                 complete: function () {
+					if(view.model.get('isAdmin')){
+						$('.isAdmin').show();
+					}
+
                     if (view.model.get('email')) {
                         makeSortable(view.model.get('isAdmin'));
                     }
@@ -105,6 +109,10 @@ $(document).ready(function () {
                                 $('#icebox').parents('.col').show();
 
                                 view.model = new Devclub.Models.User(res);
+
+								if(view.model.get('isAdmin')){
+									$('.isAdmin').show();
+								}
 
                                 Devclub.iceboxStoriesListView.collection.fetch();
 
@@ -195,6 +203,8 @@ $(document).ready(function () {
                     Devclub.iceboxStoriesListView.collection.fetch();
                     Devclub.PublicStoriesListView.collection.fetch();
 
+					Devclub.activeStoriesListView.collection.fetch();
+
                     view.reset();
                     view.modelID = null;
                 }
@@ -239,8 +249,8 @@ $(document).ready(function () {
         }
     });
 
-    Devclub.Views.CurrentStoriesList = Devclub.Views.StoriesList.extend({
-        el: '#current'
+    Devclub.Views.ActiveStoriesList = Devclub.Views.StoriesList.extend({
+        el: '#openspace'
     });
 
     Devclub.Views.BacklogStoriesList = Devclub.Views.StoriesList.extend({
@@ -271,11 +281,13 @@ $(document).ready(function () {
 
         deleteStory: function () {
             var view = this;
-            $.get(sys_url + 'devclub/delete_story/' + this.model.get('ID'), function () {
-                view.remove();
-                Devclub.iceboxStoriesListView.collection.fetch();
-                Devclub.PublicStoriesListView.collection.fetch();
-            });
+			if(confirm("А вы уверены, что хотите НАВСЕГДА удалить из списка?")){
+				$.get(sys_url + 'devclub/delete_story/' + this.model.get('ID'), function () {
+					view.remove();
+					Devclub.iceboxStoriesListView.collection.fetch();
+					Devclub.PublicStoriesListView.collection.fetch();
+				});
+			}
         },
 
 
@@ -328,8 +340,8 @@ $(document).ready(function () {
 
     Devclub.addView = new Devclub.Views.AddForm();
 
-    Devclub.currentStoriesListView = new Devclub.Views.CurrentStoriesList({
-        collection: new Devclub.Collections.CurrentStories()
+    Devclub.activeStoriesListView = new Devclub.Views.ActiveStoriesList({
+        collection: new Devclub.Collections.ActiveStories()
     });
 
     Devclub.backlogStoriesListView = new Devclub.Views.BacklogStoriesList({
@@ -341,7 +353,7 @@ $(document).ready(function () {
     });
 
     Devclub.PublicStoriesListView = new Devclub.Views.PublicStoriesList({
-        collection: new Devclub.Collections.PublicStories()
+        collection: new Devclub.Collections.CompletedStories()
     });
 
     //Backbone.history.start();
