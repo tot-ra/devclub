@@ -194,17 +194,14 @@ class devclub extends Controller {
 
 		$sort = ($_GET['sort'] == 'mine' ? 't3.position ASC' : 'avgPosition ASC');
 
-		$list = $stories->arr(
-			"status='icebox'
-            GROUP BY t1.ID
-            ORDER BY isnull ASC, isnull2 ASC, " . $sort,
-
-			"t1.*, AVG(t2.position) avgPosition, t3.position IS NULL AS isnull, AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id",
-
-				"devclub_story t1
+		$list = $stories->q(
+			"SELECT t1.*, AVG(t2.position) avgPosition, t3.position IS NULL AS isnull, AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id
+			FROM devclub_story t1
             LEFT JOIN devclub_vote t2 ON t1.ID=t2.storyID
             LEFT JOIN devclub_vote t3 ON t1.ID=t3.storyID AND t3.user='" . $this->getEmail() . "'
-            ");
+            WHERE status='icebox'
+            GROUP BY t1.ID
+            ORDER BY isnull ASC, isnull2 ASC, " . $sort);
 
 		foreach ($list as &$topic) {
 
