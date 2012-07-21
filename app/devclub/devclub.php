@@ -195,7 +195,11 @@ class devclub extends Controller {
 		$sort = ($_GET['sort'] == 'mine' ? 't3.position ASC' : 'avgPosition ASC');
 
 		$list = $stories->q(
-			"SELECT t1.*, AVG(t2.position) avgPosition, t3.position IS NULL AS isnull, AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id
+			"SELECT t1.*,
+				AVG(t2.position) avgPosition, t3.position IS NULL AS isnull,
+				AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id,
+				GROUP_CONCAT(t2.position ORDER BY t2.position ASC SEPARATOR ' ') distribution
+
 			FROM devclub_story t1
             LEFT JOIN devclub_vote t2 ON t1.ID=t2.storyID
             LEFT JOIN devclub_vote t3 ON t1.ID=t3.storyID AND t3.user='" . $this->getEmail() . "'

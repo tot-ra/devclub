@@ -126,7 +126,7 @@
 
 	<% if(rate) { %>
 		<span class="badge" rel="tooltip" title="number of votes"><i class="icon-user"></i> <%=votes%></span>
-		<span class="badge badge-success" rel="tooltip" title="average position"><%=rate%></span>
+		<span class="badge badge-success" rel="tooltip" title="average of positions:<%=distribution%>"><%=rate%></span>
 	<%
 	} %>
 
