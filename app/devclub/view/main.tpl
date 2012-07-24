@@ -26,6 +26,7 @@
 				<li><a href="#" class="login" title="Sign-in with BrowserID" style="{if $email}display: none;{/if}"><i
 						class="icon-user icon-white"></i> Sign in</a></li>
 				<li><a href="#"><strong id="mail">{$email}</strong></a></li>
+				<li><a href="#story_form" style="{if !$email}display: none;{/if}" title="Sign-in with BrowserID">Предложить свой доклад</a></li>
 				<li><a href="#" style="{if !$email}display: none;{/if}" id="logout" title="Sign-in with BrowserID">Sign
 					out <i class="icon-off icon-white"></i></a></li>
 			</ul>
@@ -86,7 +87,8 @@
 
 </section>
 
-
+<a name="story_form"/>
+<h1>Предложить свой доклад</h1>
 <form class="well" id="story_form" style="{if !$email}display: none;{/if}">
 	<div class="alert alert-block alert-error" style="display: none;">
 		<p class="msg"></p>
