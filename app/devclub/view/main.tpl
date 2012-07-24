@@ -6,7 +6,7 @@
 <div id="navbar" class="navbar">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="#">Devclub backlog</a>
+			<a class="brand" href="#">Devclub: копилка докадов</a>
 		{*
 			  <div class="btn-group pull-left">
 				  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -45,7 +45,7 @@
 
 		<div class="alert alert-error isAdmin" style="display: none;">
 			<button class="close" data-dismiss="alert">×</button>
-			Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответсвенности, spiderman
+			Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответственности, spiderman
 		</div>
 		<ul id="icebox" class="sortable"></ul>
 	</div>
@@ -102,7 +102,7 @@
 
 	<textarea name="description" placeholder="Description" style="width:100%;height: 110px;"></textarea>
 
-	<a href="#" class="btn btn-primary">Add story</a>
+	<a href="#" class="btn btn-primary">Предложить доклад</a>
 	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
 </form>
 
