@@ -76,7 +76,7 @@
 			<ul id="backlog" class="sortable"></ul>
 		</div>
 
-		<div class="col"><h1>Хочется послушать</h1>
+		<div style="margin-top:20px;" class="col"><h1>Хочется послушать</h1>
 			<div class="alert alert-info">
 				<button class="close" data-dismiss="alert">×</button>
 				Темы которые вы бы хотели услышать, как вариант - темы для <strong>openspace</strong>
@@ -87,22 +87,22 @@
 
 </section>
 
-<a name="story_form"/>
-<h1>Предложить свой доклад</h1>
+
 <form class="well" id="story_form" style="{if !$email}display: none;{/if}">
+	<h1 style="margin-bottom: 6px;">Новый доклад</h1>
 	<div class="alert alert-block alert-error" style="display: none;">
 		<p class="msg"></p>
 	</div>
 
-	<input type="text" name="title" placeholder="Title"/>
-	<input type="text" name="authors" placeholder="Author(s)"/>
+	<input type="text" name="title" placeholder="Название"/>
+	<input type="text" name="authors" placeholder="Автор(ы)"/>
 	<select name="duration">
-		<option value="40">40 min</option>
-		<option value="5">5 min</option>
+		<option value="40">40 мин</option>
+		<option value="5">пятиминутка</option>
 		<option value="0">openspace</option>
 	</select>
 
-	<textarea name="description" placeholder="Description" style="width:100%;height: 110px;"></textarea>
+	<textarea name="description" placeholder="Описание" style="width:100%;height: 110px;"></textarea>
 
 	<a href="#" class="btn btn-primary">Предложить доклад</a>
 	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
@@ -124,11 +124,11 @@
 	<% } %>
 
 
-	<span class="badge" rel="tooltip" title="duration in minutes"><i class="icon-time"></i> <%=duration%></span>
+	<span class="badge" rel="tooltip" title="длительность в минутах"><i class="icon-time"></i> <%=duration%></span>
 
 	<% if(rate) { %>
-		<span class="badge" rel="tooltip" title="number of votes"><i class="icon-user"></i> <%=votes%></span>
-		<span class="badge badge-success" rel="tooltip" title="average of positions:<%=distribution%>"><%=rate%></span>
+		<span class="badge" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
+		<span class="badge badge-success" rel="tooltip" title="среднее по позициям: <%=distribution%>"><%=rate%></span>
 	<%
 	} %>
 
