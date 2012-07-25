@@ -6,7 +6,7 @@
 <div id="navbar" class="navbar">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="#">Devclub backlog</a>
+			<a class="brand" href="#">Devclub: копилка докадов</a>
 		{*
 			  <div class="btn-group pull-left">
 				  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -26,6 +26,7 @@
 				<li><a href="#" class="login" title="Sign-in with BrowserID" style="{if $email}display: none;{/if}"><i
 						class="icon-user icon-white"></i> Sign in</a></li>
 				<li><a href="#"><strong id="mail">{$email}</strong></a></li>
+				<li><a href="#story_form" style="{if !$email}display: none;{/if}" title="Sign-in with BrowserID">Предложить свой доклад</a></li>
 				<li><a href="#" style="{if !$email}display: none;{/if}" id="logout" title="Sign-in with BrowserID">Sign
 					out <i class="icon-off icon-white"></i></a></li>
 			</ul>
@@ -45,7 +46,7 @@
 
 		<div class="alert alert-error isAdmin" style="display: none;">
 			<button class="close" data-dismiss="alert">×</button>
-			Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответсвенности, spiderman
+			Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответственности, spiderman
 		</div>
 		<ul id="icebox" class="sortable"></ul>
 	</div>
@@ -86,7 +87,8 @@
 
 </section>
 
-
+<a name="story_form"/>
+<h1>Предложить свой доклад</h1>
 <form class="well" id="story_form" style="{if !$email}display: none;{/if}">
 	<div class="alert alert-block alert-error" style="display: none;">
 		<p class="msg"></p>
@@ -102,7 +104,7 @@
 
 	<textarea name="description" placeholder="Description" style="width:100%;height: 110px;"></textarea>
 
-	<a href="#" class="btn btn-primary">Add story</a>
+	<a href="#" class="btn btn-primary">Предложить доклад</a>
 	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
 </form>
 

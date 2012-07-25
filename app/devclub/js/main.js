@@ -165,7 +165,7 @@ $(document).ready(function () {
             });
 
             $('.btn-cancel', this.el).hide();
-            $('.btn-primary', this.el).html('Add story');
+            $('.btn-primary', this.el).html('Предложить доклад');
             this.id = null;
         },
 
