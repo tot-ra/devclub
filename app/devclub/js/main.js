@@ -62,6 +62,8 @@ $(document).ready(function () {
     Devclub.Views.NavBar = Backbone.View.extend({
         el: '#navbar',
         events: {
+            'click .about_trigger': 'toggleAbout',
+            'click .story_form_trigger': 'toggleForm',
             'click .login': 'login',
             'click #logout': 'logout'
         },
@@ -83,6 +85,14 @@ $(document).ready(function () {
         },
 
 
+		toggleAbout: function (){
+			$('#about').toggle();
+		},
+
+		toggleForm: function (){
+			$('#story_form').toggle();
+		},
+
         login: function () {
             var view = this;
             navigator.id.get(function (assertion) {
@@ -99,13 +109,15 @@ $(document).ready(function () {
                             if (res === null) {
                             }//loggedOut();
                             else {
-                                $('#icebox .vote').show();
-                                $('.login').hide();
-                                $('.login').parents('.alert:first').hide();
-                                $('#story_form').show();
-                                $('#logout').show();
-                                $('#mail').html(res.email);
 
+								$('.logged_in').show();
+								$('.logged_out').hide();
+
+                                $('#icebox .vote').show();
+
+                                $('.login').parents('.alert:first').hide();
+
+                                $('#mail').html(res.email);
                                 $('#icebox').parents('.col').show();
 
                                 view.model = new Devclub.Models.User(res);

@@ -23,16 +23,55 @@
   *}
 
 			<ul class="nav">
-				<li><a href="#" class="login" title="Sign-in with BrowserID" style="{if $email}display: none;{/if}"><i
-						class="icon-user icon-white"></i> Sign in</a></li>
+
+				<li><a href="#" class="login logged_out" title="Sign-in with BrowserID" style="{if $email}display: none;{/if}"><i class="icon-user icon-white"></i> Войти</a></li>
+
+				<li><a class="story_form_trigger logged_in" href="#" style="{if !$email}display: none;{/if}"><i class="icon-plus icon-white"></i> Предложить свой доклад</a></li>
+
+
+
+			</ul>
+
+			<ul class="nav pull-right">
 				<li><a href="#"><strong id="mail">{$email}</strong></a></li>
-				<li><a href="#story_form" style="{if !$email}display: none;{/if}" title="Sign-in with BrowserID">Предложить свой доклад</a></li>
-				<li><a href="#" style="{if !$email}display: none;{/if}" id="logout" title="Sign-in with BrowserID">Sign
-					out <i class="icon-off icon-white"></i></a></li>
+				<li><a class="about_trigger" href="#">About</a></li>
+				<li class="logged_in" style="{if !$email}display: none;{/if}"><a href="#" id="logout" title="Sign-in with BrowserID"> Выйти <i class="icon-off icon-white"></i></a></li>
 			</ul>
 		</div>
 	</div>
 </div>
+
+<div id="about" style="display: none;" class="well">
+	<h1>Как оно работает?</h1>
+
+	<p>Голосовалка написана на php, backbone.js, twitter bootstrap и крутится на amazon ec2 + rds. Писатель - <a href="http://kurapov.name/">Артём</a>, под чутким руководством <a href="http://asolntsev.livejournal.com/">Андрея</a> и <a href="https://groups.google.com/forum/#!topic/devclub-eu/5wyj2vBdlgY">ко</a>. Исходный код <a href="https://github.com/tot-ra/devclub/tree/master/app/devclub">частично открытый</a> и принимает pull-запросы. Голосование частично тайное (можно видеть позицию, но не явно его автора)</p>
+
+	<p>Алгоритм простой - имеем <a href="https://github.com/tot-ra/devclub/blob/master/app/devclub/models/schema.sql">две таблицы</a>, в одних - доклады, в других - голоса. Когда человек голосует за доклад, формируется его список голосов с position от 0..N, где N - число докладов за которые он проголосовал. В публичном рейтинге высчитвается среднее арифметическое = AVG(position) и идёт сортировка по нему. </p>
+
+	<p>Преимущества и недостатки очевидны - можно голосовать за любое число докладов привычным упорядочиванием, только что добавленные доклады могут легко привлечь к себе внимание оказавшись наверху, доклады не могут быть одинаково важны. Пока что нельзя отказаться от голоса за доклад и среднее арифметическое часто непропорционально влияет на результат (т.е. одна "тридцатка" может существенно опустить)</p>
+</div>
+
+
+
+<form class="well" id="story_form" style="display: none;">
+	<h1 style="margin-bottom: 6px;">Новый доклад</h1>
+	<div class="alert alert-block alert-error" style="display: none;">
+		<p class="msg"></p>
+	</div>
+
+	<input type="text" name="title" placeholder="Название"/>
+	<input type="text" name="authors" placeholder="Автор(ы)"/>
+	<select name="duration">
+		<option value="40">40 мин</option>
+		<option value="5">пятиминутка</option>
+		<option value="0">openspace</option>
+	</select>
+
+	<textarea name="description" placeholder="Описание" style="width:100%;height: 110px;"></textarea>
+
+	<a href="#" class="btn btn-primary">Предложить доклад</a>
+	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
+</form>
 
 <section class="row-fluid">
 	<div class="col span4" style="{if !$email}display: none;{/if}">
@@ -56,7 +95,7 @@
 			<h1>Интересные всем <a rel="tooltip" title="JSON API source" href="/devclub/list_public_stories/"><img src="/app/devclub/img/json_icon.png"></a></h1>
 
 			{if !$email}
-				<div class="alert alert-info">
+				<div class="alert alert-info logged_out">
 					<button class="close" data-dismiss="alert">×</button>
 					Войдите с Mozilla BrowserID что-бы добавить новую тему
 				</div>
@@ -86,28 +125,6 @@
 	</div>
 
 </section>
-
-
-<form class="well" id="story_form" style="{if !$email}display: none;{/if}">
-	<h1 style="margin-bottom: 6px;">Новый доклад</h1>
-	<div class="alert alert-block alert-error" style="display: none;">
-		<p class="msg"></p>
-	</div>
-
-	<input type="text" name="title" placeholder="Название"/>
-	<input type="text" name="authors" placeholder="Автор(ы)"/>
-	<select name="duration">
-		<option value="40">40 мин</option>
-		<option value="5">пятиминутка</option>
-		<option value="0">openspace</option>
-	</select>
-
-	<textarea name="description" placeholder="Описание" style="width:100%;height: 110px;"></textarea>
-
-	<a href="#" class="btn btn-primary">Предложить доклад</a>
-	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
-</form>
-
 
 {literal}
 <script type="text/template" id="story_item_template">
