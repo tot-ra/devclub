@@ -50,6 +50,8 @@ class devclub extends Controller {
 		$votes = new Model('devclub_vote');
 		$this->smarty('voted', $votes->int("user='" . $this->getEmail() . "'", "COUNT(*)"));
 
+		$this->smarty('distinct_users', $votes->int("1=1", "COUNT(DISTINCT(user))"));
+
 		return $this->view('main.tpl');
 	}
 
@@ -192,11 +194,43 @@ class devclub extends Controller {
 		$stories = new Model('devclub_story');
 		$vote    = new Model('devclub_vote');
 
-		$sort = ($_GET['sort'] == 'mine' ? 't3.position ASC' : 'avgPosition ASC');
+		switch($_GET['sort']){
+			case 'mine':
+				$sort = 't3.position ASC';
+				$rateVal = 'arithmeticAvg';
+				break;
+
+			case 'geometric':
+				$sort = 'geometricAvg ASC';
+				$rateVal = 'geometricAvg';
+				break;
+
+			case 'harmonic':
+				$sort = 'harmonicAvg ASC';
+				$rateVal = 'harmonicAvg';
+				break;
+
+			case 'arithmetic':
+				$sort = 'arithmeticAvg ASC';
+				$rateVal = 'arithmeticAvg';
+				break;
+
+			case 'absolute':
+			default:
+				$sort = 'totalCount DESC';
+				$rateVal = 'totalCount';
+				break;
+		}
+
 
 		$list = $stories->q(
 			"SELECT t1.*,
-				AVG(t2.position) avgPosition, t3.position IS NULL AS isnull,
+				COUNT(t2.storyID) totalCount,
+				AVG(t2.position) arithmeticAvg,
+				EXP(AVG(LN(t2.position))) geometricAvg,
+				COUNT(t2.storyID)/SUM(1/(t2.position+1)) harmonicAvg,
+
+				t3.position IS NULL AS isnull,
 				AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id,
 				GROUP_CONCAT(t2.position ORDER BY t2.position ASC SEPARATOR ' ') distribution
 
@@ -210,8 +244,14 @@ class devclub extends Controller {
 		foreach ($list as &$topic) {
 
 			$topic->voted = $vote->int("storyID='" . $topic->ID . "' AND user='" . $this->getEmail() . "'", "COUNT(*)");
-			$topic->votes = $vote->int("storyID='" . $topic->ID . "'", "COUNT(user)");
-			$topic->rate  = round(100 * (float)$vote->int("storyID='" . $topic->ID . "'", "1 + AVG(position)")) / 100;
+			$topic->votes = $topic->totalCount; //$vote->int("storyID='" . $topic->ID . "'", "COUNT(user)");
+
+			if($rateVal=='totalCount'){
+				$topic->rate  = $topic->{$rateVal};
+			}
+			else{
+				$topic->rate  = round(100 * $topic->{$rateVal})/100;
+			}//round(100 * (float)$vote->int("storyID='" . $topic->ID . "'", "1 + AVG(position)")) / 100;
 		}
 
 		echo json_encode($list);
