@@ -280,7 +280,12 @@ class devclub extends Controller {
 			}
 			else{
 				$topic->rate  = round(100 * $topic->{$rateVal})/100;
-			}//round(100 * (float)$vote->int("storyID='" . $topic->ID . "'", "1 + AVG(position)")) / 100;
+			}
+
+			$topic->gravatar = md5(strtolower(trim($topic->creator_email)));
+			unset($topic->creator_email);
+
+			//round(100 * (float)$vote->int("storyID='" . $topic->ID . "'", "1 + AVG(position)")) / 100;
 		}
 
 		echo json_encode($list);

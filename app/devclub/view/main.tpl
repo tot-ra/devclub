@@ -6,7 +6,7 @@
 <div id="navbar" class="navbar">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="#">Devclub: копилка докадов</a>
+			<a class="brand" href="#">Devclub: копилка докладов</a>
 		{*
 			  <div class="btn-group pull-left">
 				  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -71,13 +71,19 @@
 
 	<p>Алгоритм простой - имеем <a href="https://github.com/tot-ra/devclub/blob/master/app/devclub/models/schema.sql">две
 		таблицы</a>, в одних - доклады, в других - голоса. Когда человек голосует за доклад, формируется его список
-		голосов с position от 0..N, где N - число докладов за которые он проголосовал. В публичном рейтинге высчитвается
-		среднее арифметическое = AVG(position) и идёт сортировка по нему. </p>
-
-	<p>Преимущества и недостатки очевидны - можно голосовать за любое число докладов привычным упорядочиванием, только
+		голосов с position от 0..N, где N - число докладов за которые он проголосовал.</p>
+	<p>Публичный рейтинг высчитвается различными сортировками, что-бы максимально всем угодить</p>
+	<p><strong>Среднее арифметическое</strong> - обычный AVG(position). Преимущества и недостатки очевидны - можно голосовать за любое число докладов привычным упорядочиванием, только
 		что добавленные доклады могут легко привлечь к себе внимание оказавшись наверху, доклады не могут быть одинаково
 		важны. Пока что нельзя отказаться от голоса за доклад и среднее арифметическое часто непропорционально влияет на
 		результат (т.е. одна "тридцатка" может существенно опустить)</p>
+	<p><strong>Среднее геометрическое</strong> - более хитрая, EXP(AVG(LN(position))).</p>
+	<p><strong>Среднее гармоническое</strong> (по умолчанию) - ещё более хитрая, поскольку учитывает число голосов, COUNT(storyID)/SUM(1/(position+1)).</p>
+
+	<p><strong>Среднее гармоническое взвешенное</strong> - предложенный Андреем Ткачёвым, вариант с дополнительной нормализацией в зависимости от общего числа голосов и общего числа тем.
+						($voteCount - SQRT( ($voteCount * $voteCount) - POW(COUNT(storyID),2) )) /
+						( $topicCount - SQRT( ($topicCount * $topicCount) - POW(среднее гармоническое,2)))
+	</p>
 </div>
 
 
@@ -185,6 +191,9 @@
 	<strong><%=title%></strong> &mdash; <%=authors%>
 
 	<div style="display:none;" class="extra">
+		<% if(typeof(gravatar)!='undefined'){%>
+		<img src="http://gravatar.com/avatar/<%=gravatar%>?s=40" style="float:right;margin-left:3px;" />
+		<%}%>
 		<span class="badge"><i class="icon-time"></i> <%=duration%> мин</span>
 		<em style="padding:5px 0; display:block;"><%=description%></em>
 	</div>
