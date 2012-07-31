@@ -6,6 +6,7 @@ CREATE TABLE `devclub_story` (
   `status` enum('icebox','backlog','current','completed') COLLATE utf8_unicode_ci DEFAULT 'icebox',
   `authors` varchar(250) CHARACTER SET utf8 DEFAULT NULL,
   `creator_email` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date_added` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
