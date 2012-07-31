@@ -119,6 +119,7 @@ class devclub extends Controller {
                     'authors'       => htmlentities($params['authors'], ENT_COMPAT, 'UTF-8'),
                     'description'   => htmlentities($params['description'], ENT_COMPAT, 'UTF-8'),
                     'duration'      => (int)$params['duration'],
+                    'date_added'    => 'NOW()',
                     'status'        => $status,
                     'creator_email' => $this->getEmail()
                )
@@ -194,57 +195,85 @@ class devclub extends Controller {
 		$stories = new Model('devclub_story');
 		$vote    = new Model('devclub_vote');
 
+		if($_GET['sort']=='mine'){
+			$sortingOrder='emptyMyVote ASC,';
+		}
+		else{
+			$sortingOrder = '';
+		}
+
+		$sortingOrder.='emptyAllVotes ASC,';
+
 		switch($_GET['sort']){
 			case 'mine':
-				$sort = 't3.position ASC';
+				$sortingOrder .= 't3.position ASC';
 				$rateVal = 'arithmeticAvg';
+				$sortingSelect = 'AVG(t2.position) arithmeticAvg';
 				break;
 
 			case 'geometric':
-				$sort = 'geometricAvg ASC';
+				$sortingOrder .= 'geometricAvg ASC';
 				$rateVal = 'geometricAvg';
+				$sortingSelect = 'EXP(AVG(LN(t2.position))) geometricAvg';
 				break;
 
 			case 'harmonic':
-				$sort = 'harmonicAvg ASC';
+				$sortingOrder .= 'harmonicAvg ASC';
 				$rateVal = 'harmonicAvg';
+				$sortingSelect = 'COUNT(t2.storyID)/SUM(1/(t2.position+1)) harmonicAvg';
+				break;
+
+			case 'harmonic_weight':
+				$voteCount = $vote->int("1=1","COUNT(*)");
+				$topicCount = $stories->int("1=1","COUNT(id)");
+
+				$sortingOrder .= 'harmonicWeight DESC';
+				$rateVal = 'harmonicWeight';
+				$sortingSelect = "
+				(
+					($voteCount - SQRT( ($voteCount * $voteCount) - POW(COUNT(t2.storyID),2) ))
+					/
+					( $topicCount - SQRT( ($topicCount * $topicCount) - POW(COUNT(t2.storyID)/SUM(1/(t2.position+1)),2))
+				) ) harmonicWeight";
+
 				break;
 
 			case 'arithmetic':
-				$sort = 'arithmeticAvg ASC';
+				$sortingOrder .= 'arithmeticAvg ASC';
 				$rateVal = 'arithmeticAvg';
+				$sortingSelect = 'AVG(t2.position) arithmeticAvg';
 				break;
 
 			case 'absolute':
 			default:
-				$sort = 'totalCount DESC';
+				$sortingOrder .= 'totalCount DESC';
 				$rateVal = 'totalCount';
+				$sortingSelect = 'COUNT(t2.storyID) totalCount';
 				break;
 		}
 
 
-		$list = $stories->q(
-			"SELECT t1.*,
-				COUNT(t2.storyID) totalCount,
-				AVG(t2.position) arithmeticAvg,
-				EXP(AVG(LN(t2.position))) geometricAvg,
-				COUNT(t2.storyID)/SUM(1/(t2.position+1)) harmonicAvg,
 
-				t3.position IS NULL AS isnull,
-				AVG(t2.position) IS NULL AS isnull2, t3.position, t1.ID as id,
-				GROUP_CONCAT(t2.position ORDER BY t2.position ASC SEPARATOR ' ') distribution
+		$query = "SELECT t1.*, ".$sortingSelect.",
+						t3.position IS NULL AS emptyMyVote,
+						AVG(t2.position) IS NULL AS emptyAllVotes,
+						t3.position,
+						t1.ID as id,
+						GROUP_CONCAT(t2.position ORDER BY t2.position ASC SEPARATOR ' ') distribution
 
-			FROM devclub_story t1
-            LEFT JOIN devclub_vote t2 ON t1.ID=t2.storyID
-            LEFT JOIN devclub_vote t3 ON t1.ID=t3.storyID AND t3.user='" . $this->getEmail() . "'
-            WHERE status='icebox'
-            GROUP BY t1.ID
-            ORDER BY isnull ASC, isnull2 ASC, " . $sort);
+					FROM devclub_story t1
+		            LEFT JOIN devclub_vote t2 ON t1.ID=t2.storyID
+		            LEFT JOIN devclub_vote t3 ON t1.ID=t3.storyID AND t3.user='" . $this->getEmail() . "'
+		            WHERE status='icebox'
+		            GROUP BY t1.ID
+		            ORDER BY " . $sortingOrder;
+
+		$list = $stories->q($query);
 
 		foreach ($list as &$topic) {
 
 			$topic->voted = $vote->int("storyID='" . $topic->ID . "' AND user='" . $this->getEmail() . "'", "COUNT(*)");
-			$topic->votes = $topic->totalCount; //$vote->int("storyID='" . $topic->ID . "'", "COUNT(user)");
+			$topic->votes = $vote->int("storyID='" . $topic->ID . "'", "COUNT(user)");
 
 			if($rateVal=='totalCount'){
 				$topic->rate  = $topic->{$rateVal};

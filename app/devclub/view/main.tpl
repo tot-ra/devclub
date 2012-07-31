@@ -39,10 +39,11 @@
 						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="#sort/absolute">Абсолютная</a></li>
-						<li><a href="#sort/arithmetic">Арифметическая</a></li>
-						<li><a href="#sort/geometric">Геометрическая</a></li>
-						<li><a href="#sort/harmonic">Гармоническая</a></li>
+						<li><a href="#sort/absolute">По числу голосов</a></li>
+						<li><a href="#sort/arithmetic">Арифметическая по позициям</a></li>
+						<li><a href="#sort/geometric">Геометрическая по позициям</a></li>
+						<li><a href="#sort/harmonic">Гармоническая по позициям</a></li>
+						<li><a href="#sort/harmonic_weight">Гармоническая взвешенная</a></li>
 					</ul>
 				</li>
 
