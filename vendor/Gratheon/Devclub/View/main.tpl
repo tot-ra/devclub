@@ -51,7 +51,7 @@
 
 			<ul class="nav pull-right">
 				<li><a href="#"><strong id="mail">{$email}</strong></a></li>
-				<li><a class="about_trigger" href="#">About</a></li>
+				<li><a href="https://github.com/Gratheon/devclub">About</a></li>
 				<li class="logged_in" style="{if !$email}display: none;{/if}">
 					<a href="#" id="logout" title="Sign-in with BrowserID"> Выйти
 						<i class="icon-off icon-white"></i></a></li>
@@ -59,33 +59,6 @@
 		</div>
 	</div>
 </div>
-
-<div id="about" style="display: none;" class="well">
-	<h1>Как оно работает?</h1>
-
-	<p>Голосовалка написана на php, backbone.js, twitter bootstrap и крутится на amazon ec2 + rds. Писатель -
-		<a href="http://kurapov.name/">Артём</a>, под чутким руководством <a href="http://asolntsev.livejournal.com/">Андрея</a>
-		и <a href="https://groups.google.com/forum/#!topic/devclub-eu/5wyj2vBdlgY">ко</a>. Исходный код
-		<a href="https://github.com/tot-ra/devclub/tree/master/app/devclub">частично открытый</a> и принимает
-		pull-запросы. Голосование частично тайное (можно видеть позицию, но не явно его автора)</p>
-
-	<p>Алгоритм простой - имеем <a href="https://github.com/tot-ra/devclub/blob/master/app/devclub/models/schema.sql">две
-		таблицы</a>, в одних - доклады, в других - голоса. Когда человек голосует за доклад, формируется его список
-		голосов с position от 0..N, где N - число докладов за которые он проголосовал.</p>
-	<p>Публичный рейтинг высчитвается различными сортировками, что-бы максимально всем угодить</p>
-	<p><strong>Среднее арифметическое</strong> - обычный AVG(position). Преимущества и недостатки очевидны - можно голосовать за любое число докладов привычным упорядочиванием, только
-		что добавленные доклады могут легко привлечь к себе внимание оказавшись наверху, доклады не могут быть одинаково
-		важны. Пока что нельзя отказаться от голоса за доклад и среднее арифметическое часто непропорционально влияет на
-		результат (т.е. одна "тридцатка" может существенно опустить)</p>
-	<p><strong>Среднее геометрическое</strong> - более хитрая, EXP(AVG(LN(position))).</p>
-	<p><strong>Среднее гармоническое</strong> (по умолчанию) - ещё более хитрая, поскольку учитывает число голосов, COUNT(storyID)/SUM(1/(position+1)).</p>
-
-	<p><strong>Среднее гармоническое взвешенное</strong> - предложенный Андреем Ткачёвым, вариант с дополнительной нормализацией в зависимости от общего числа голосов и общего числа тем.
-						($voteCount - SQRT( ($voteCount * $voteCount) - POW(COUNT(storyID),2) )) /
-						( $topicCount - SQRT( ($topicCount * $topicCount) - POW(среднее гармоническое,2)))
-	</p>
-</div>
-
 
 <form class="well" id="story_form" style="display: none;">
 	<h1 style="margin-bottom: 6px;">Новый доклад</h1>
