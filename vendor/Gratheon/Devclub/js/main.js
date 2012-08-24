@@ -39,7 +39,7 @@ $(document).ready(function () {
 	});
 
 	Devclub.Collections.CompletedStories = Backbone.Collection.extend({
-		order: 'harmonic',
+		order: 'harmonic_weight',
 		url: function () {
 			return sys_url + 'list_public_stories/?sort='+ this.order;
 		}
@@ -89,7 +89,7 @@ $(document).ready(function () {
 						type: 'POST',
 						dataType: 'json',
 
-						url: sys_url + 'devclub/login/',
+						url: sys_url + 'login/',
 						data: { assertion: assertion },
 						success: function (res, status, xhr) {
 

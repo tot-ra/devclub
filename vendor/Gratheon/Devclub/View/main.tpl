@@ -196,6 +196,7 @@
 		<%}%>
 		<span class="badge"><i class="icon-time"></i> <%=duration%> мин</span>
 		<em style="padding:5px 0; display:block;"><%=description%></em>
+		<div style="clear:both;"></div>
 	</div>
 </script>
 {/literal}

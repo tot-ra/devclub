@@ -4,7 +4,9 @@
  * @since 20.06.12 15:44
  */
 
-class devclub extends Controller {
+namespace Gratheon\Devclub\Controller\Front;
+
+class Front extends \Gratheon\Core\Controller {
 
 	private $admins = array(
 		'soswow@gmail.com',
@@ -16,7 +18,6 @@ class devclub extends Controller {
 		'andrei.solntsev@gmail.com'
 	);
 
-    public $db_adapter_config = 2;
     public $load_config = false;
 
 
@@ -26,45 +27,48 @@ class devclub extends Controller {
 
 
 	function main() {
-		$this->add_css('bootstrap.css');
-		$this->add_css('bootstrap-responsive.css');
+		$this->add_css('/vendor/twitter/bootstrap/css/bootstrap.css');
+		$this->add_css('/vendor/twitter/bootstrap/css/bootstrap-responsive.css');
 		$this->add_css('main.css');
-		$this->add_css('/cms/external_libraries/jquery_ui/ui-lightness/jquery-ui-1.8.10.custom.css', false);
+		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.all.css', false);
 
 		$this->add_js('https://browserid.org/include.js', false);
 
-		$this->add_js('/cms/external_libraries/jquery/1.7.1.js');
-		$this->add_js('bootstrap.min.js');
-		$this->add_js('/cms/external_libraries/backbone/underscore-min.js');
-		$this->add_js('/cms/external_libraries/backbone/backbone.js');
-		//$this->add_js('backbone-0.9.2.js');
-		$this->add_js('/cms/external_libraries/jquery_ui/jquery-ui-1.8.10.full.min.js');
+		$this->add_js('/vendor/jquery/jquery/jquery-1.7.2.js');
+		$this->add_js('/vendor/twitter/bootstrap/js/bootstrap.min.js');
+		$this->add_js('/vendor/backbonejs/underscorejs/underscore-min.js');
+		$this->add_js('/vendor/backbonejs/backbonejs/backbone-min.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.core.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.widget.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.mouse.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.autocomplete.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.draggable.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.droppable.js');
+		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.sortable.js');
 
 		$this->add_js('touch-punch.js');
 		$this->add_js('main.js');
 
-		$this->add_js_var('sys_url', sys_relative_url . 'devclub/');
+		$this->add_js_var('sys_url', sys_url);
 
-		$this->smarty('email', $this->getEmail());
+		$this->assign('email', $this->getEmail());
 
-		$votes = new Model('devclub_vote');
-		$this->smarty('voted', $votes->int("user='" . $this->getEmail() . "'", "COUNT(*)"));
+		$votes = $this->model('devclub_vote');
+		$this->assign('voted', $votes->int("user='" . $this->getEmail() . "'", "COUNT(*)"));
 
-		$this->smarty('distinct_users', $votes->int("1=1", "COUNT(DISTINCT(user))"));
+		$this->assign('distinct_users', $votes->int("1=1", "COUNT(DISTINCT(user))"));
 
 		return $this->view('main.tpl');
 	}
 
 
 	function story() {
-		global $input;
-
 		if (!$this->getEmail()) {
 			return false;
 		}
 
-		$stories = new Model('devclub_story');
-		$votes   = new Model('devclub_vote');
+		$stories = $this->model('devclub_story');
+		$votes   = $this->model('devclub_vote');
 
 		$params = (array)json_decode(file_get_contents('php://input'));
 
@@ -73,7 +77,7 @@ class devclub extends Controller {
 		unset($params['position']);
 
 
-		$ID = (int)$input->PID[3];
+		$ID = (int)$this->input->URI[3];
 		if ($ID) {
 			$story = $stories->obj($ID);
 
@@ -178,22 +182,22 @@ class devclub extends Controller {
 
 
 	function list_openspace_stories() {
-		$stories = new Model('devclub_story');
+		$stories = $this->model('devclub_story');
 		echo json_encode($stories->arr("status='openspace'",
 			"*, '' votes, '' rate, '0' voted, '' position"));
 	}
 
 
 	function list_backlog_stories() {
-		$stories = new Model('devclub_story');
+		$stories = $this->model('devclub_story');
 		echo json_encode($stories->arr("status='backlog'",
 			"*, '' votes, '' rate, '0' voted, '' position"));
 	}
 
 
 	function list_public_stories() {
-		$stories = new Model('devclub_story');
-		$vote    = new Model('devclub_vote');
+		$stories = $this->model('devclub_story');
+		$vote    = $this->model('devclub_vote');
 
 		if($_GET['sort']=='mine'){
 			$sortingOrder='emptyMyVote ASC,';
@@ -293,9 +297,8 @@ class devclub extends Controller {
 
 
 	function delete_story() {
-		global $input;
-		$ID      = (int)$input->PID[3];
-		$stories = new Model('devclub_story');
+		$ID      = (int)$this->input->URI[3];
+		$stories = $this->model('devclub_story');
 		$story   = $stories->obj($ID);
 		if ($story && ($this->checkAdmin() || $story->creator_email == $this->getEmail())) {
 			$stories->delete($ID);
@@ -363,7 +366,7 @@ class devclub extends Controller {
 		}
 
 		$name          = mysql_real_escape_string($_GET['term']);
-		$devclub_story = new Model('devclub_story');
+		$devclub_story = $this->model('devclub_story');
 		echo json_encode($devclub_story->arrint("authors LIKE '%$name%'", "DISTINCT(authors)"));
 	}
 }
