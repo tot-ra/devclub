@@ -49,7 +49,7 @@ class Front extends \Gratheon\Core\Controller {
 		$this->add_js('touch-punch.js');
 		$this->add_js('main.js');
 
-		$this->add_js_var('sys_url', sys_url);
+		$this->add_js_var('sys_url', sys_url_rel);
 
 		$this->assign('email', $this->getEmail());
 

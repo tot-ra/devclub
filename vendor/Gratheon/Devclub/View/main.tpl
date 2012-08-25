@@ -3,7 +3,7 @@
 </head>
 <body>
 
-<div id="navbar" class="navbar">
+<div id="navbar" class="navbar navbar-inverse">
 	<div class="navbar-inner">
 		<div class="container">
 			<a class="brand" href="#">Devclub: копилка докладов</a>
@@ -165,7 +165,7 @@
 
 	<div style="display:none;" class="extra">
 		<% if(typeof(gravatar)!='undefined'){%>
-		<img src="http://gravatar.com/avatar/<%=gravatar%>?s=40" style="float:right;margin-left:3px;" />
+		<img src="https://gravatar.com/avatar/<%=gravatar%>?s=40" style="float:right;margin-left:3px;" />
 		<%}%>
 		<span class="badge"><i class="icon-time"></i> <%=duration%> мин</span>
 		<em style="padding:5px 0; display:block;"><%=description%></em>
