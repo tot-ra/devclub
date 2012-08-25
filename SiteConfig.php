@@ -5,6 +5,7 @@
 
 define('app_path', '/Gratheon/Devclub');
 define('sys_url', "http://localhost/devclub/");
+define('sys_url_rel', "/devclub/");
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -17,7 +18,6 @@ class SiteConfig extends Gratheon\Core\Config {
 			'database'  => '',
 			'login'     => '',
 			'password'  => ''
-
 		)
 	);
 }
