@@ -281,7 +281,7 @@ $(document).ready(function () {
 		deleteStory: function () {
 			var view = this;
 			if (confirm("А вы уверены, что хотите НАВСЕГДА удалить из списка?")) {
-				$.get(sys_url + 'devclub/delete_story/' + this.model.get('ID'), function () {
+				$.get(sys_url + 'delete_story/' + this.model.get('ID'), function () {
 					view.remove();
 					Devclub.iceboxStoriesListView.collection.fetch();
 					Devclub.PublicStoriesListView.collection.fetch();
@@ -321,9 +321,10 @@ $(document).ready(function () {
 		render: function () {
 			var tplvars = this.model.toJSON();
 
+			/*
 			if (this.model.get('creator_email') == Devclub.NavBar.model.get('email') || Devclub.NavBar.model.get('isAdmin')) {
-				tplvars.owner = true;
-			}
+			}*/
+			tplvars.owner = this.model.get('owner');
 
 			if (tplvars.description != null) {
 				tplvars.description = tplvars.description.replace(/\n/g, '<br />');

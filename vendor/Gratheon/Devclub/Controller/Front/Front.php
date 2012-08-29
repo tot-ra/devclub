@@ -183,15 +183,17 @@ class Front extends \Gratheon\Core\Controller {
 
 	function list_openspace_stories() {
 		$stories = $this->model('devclub_story');
-		echo json_encode($stories->arr("status='openspace'",
-			"*, '' votes, '' rate, '0' voted, '' position"));
+		$list = $stories->arr("status='openspace'", "*, '' votes, '' rate, '0' voted, '' position");
+
+		echo json_encode($list);
 	}
 
 
 	function list_backlog_stories() {
 		$stories = $this->model('devclub_story');
-		echo json_encode($stories->arr("status='backlog'",
-			"*, '' votes, '' rate, '0' voted, '' position"));
+		$list = $stories->arr("status='backlog'", "*, '' votes, '' rate, '0' voted, '' position");
+
+		echo json_encode($list);
 	}
 
 
@@ -285,6 +287,8 @@ class Front extends \Gratheon\Core\Controller {
 			else{
 				$topic->rate  = round(100 * $topic->{$rateVal})/100;
 			}
+
+			$topic->owner = ($topic->creator_email==$this->getEmail()) || $this->checkAdmin();
 
 			$topic->gravatar = md5(strtolower(trim($topic->creator_email)));
 			unset($topic->creator_email);
