@@ -29,7 +29,7 @@ class Front extends \Gratheon\Core\Controller {
 	function main() {
 		$this->add_css('/vendor/twitter/bootstrap/css/bootstrap.css');
 		$this->add_css('/vendor/twitter/bootstrap/css/bootstrap-responsive.css');
-		$this->add_css('main.css');
+		$this->add_css('main.css', false);
 		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.all.css', false);
 
 		$this->add_js('https://browserid.org/include.js', false);
@@ -192,6 +192,13 @@ class Front extends \Gratheon\Core\Controller {
 	function list_backlog_stories() {
 		$stories = $this->model('devclub_story');
 		$list = $stories->arr("status='backlog'", "*, '' votes, '' rate, '0' voted, '' position");
+
+		echo json_encode($list);
+	}
+
+	function list_completed_stories() {
+		$stories = $this->model('devclub_story');
+		$list = $stories->arr("status='completed'", "*, '' votes, '' rate, '0' voted, '' position");
 
 		echo json_encode($list);
 	}

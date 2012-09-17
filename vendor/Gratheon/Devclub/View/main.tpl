@@ -7,23 +7,8 @@
 	<div class="navbar-inner">
 		<div class="container">
 			<a class="brand" href="#">Devclub: копилка докладов</a>
-		{*
-			  <div class="btn-group pull-left">
-				  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					  <i class="icon-user"></i> Authenticate <span class="caret"></span>
-				  </a>
-
-				  <ul class="dropdown-menu">
-					  <li><a href="#google_auth">Google</a></li>
-					  <li><a href="#facebook_auth">Facebook</a></li>
-					  <li class="divider"></li>
-				  </ul>
-			  </div>
-
-  *}
 
 			<ul class="nav">
-
 				<li>
 					<a href="#" class="login logged_out" title="Sign-in with BrowserID" style="{if $email}display: none;{/if}"><i class="icon-user icon-white"></i>
 						Войти</a></li>
@@ -81,9 +66,27 @@
 	<a href="#" class="btn btn-cancel" style="display: none;">Cancel</a>
 </form>
 
-<section class="row-fluid">
-	<div class="col span4" style="{if !$email}display: none;{/if}">
-		<h2>Интересные мне</h2>
+<div class="alert alert-error isAdmin hidden">
+	<button class="close" data-dismiss="alert">×</button>
+	Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответственности,
+	spiderman
+</div>
+
+<ul class="nav nav-pills">
+	<li class="active"><a data-toggle="public" href="#"> Публичный рейтинг {if $distinct_users}
+		<span class="label" rel="tooltip" title="Число проголосовавших">{$distinct_users}</span>{/if}</a></li>
+	<li class=""><a data-toggle="personal" href="#"> Личный топ</a></li>
+	<li class=""><a data-toggle="plans" href="#"> Планируется</a></li>
+	<li class=""><a data-toggle="completed" href="#"> Прошедшие</a></li>
+	<li class=""><a data-toggle="openspace" href="#"> Openspace</a></li>
+</ul>
+
+<div class="row">
+	<div id="public" class="col span5">
+		<ul id="public_ul" data-status="icebox"></ul>
+	</div>
+
+	<div id="personal" class="col hidden span5">
 	{if !$voted}
 		<div class="alert alert-info">
 			<button class="close" data-dismiss="alert">×</button>
@@ -91,52 +94,31 @@
 			<i class="icon-resize-vertical"></i> список согласно вашему интересу
 		</div>
 	{/if}
+		<ul id="personal_ul" class="sortable" data-status="icebox"></ul>
+	</div>
 
-		<div class="alert alert-error isAdmin" style="display: none;">
+	<div id="plans" class="col hidden span5">
+
+		<div class="alert alert-info">
 			<button class="close" data-dismiss="alert">×</button>
-			Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответственности,
-			spiderman
+			Сюда попадают отобранные организаторами темы
 		</div>
-		<ul id="icebox" class="sortable"></ul>
+		<ul id="backlog" class="sortable" data-status="backlog"></ul>
 	</div>
 
-	<div class="span4">
-		<div class="col">
-			<h2>Интересны {if $distinct_users}{$distinct_users} участникам{else}всем{/if}</a></h2>
-
-		{if !$email}
-			<div class="alert alert-info logged_out">
-				<button class="close" data-dismiss="alert">×</button>
-				Войдите с Mozilla BrowserID что-бы добавить новую тему
-			</div>
-		{/if}
-
-			<ul id="public"></ul>
-		</div>
+	<div id="completed" class="col hidden span5">
+		<ul id="completed_ul" class="sortable" data-status="completed"></ul>
 	</div>
 
-
-	<div class="span4">
-		<div class="col"><h2>В подготовке</h2>
-
-			<div class="alert alert-info">
-				<button class="close" data-dismiss="alert">×</button>
-				Сюда попадают отобранные организаторами темы
-			</div>
-			<ul id="backlog" class="sortable"></ul>
+	<div id="openspace" class="col hidden span5">
+		<div class="alert alert-info">
+			<button class="close" data-dismiss="alert">×</button>
+			Темы которые вы бы хотели услышать, как вариант - темы для <strong>openspace</strong>
 		</div>
-
-		<div style="margin-top:20px;" class="col"><h2>Хочется послушать</h2>
-
-			<div class="alert alert-info">
-				<button class="close" data-dismiss="alert">×</button>
-				Темы которые вы бы хотели услышать, как вариант - темы для <strong>openspace</strong>
-			</div>
-			<ul id="openspace" class="sortable"></ul>
-		</div>
+		<ul id="openspace_ul" class="sortable" data-status="openspace"></ul>
 	</div>
-
-</section>
+</div>
+</div>
 
 {literal}
 <script type="text/template" id="story_item_template">
@@ -165,10 +147,11 @@
 
 	<div style="display:none;" class="extra">
 		<% if(typeof(gravatar)!='undefined'){%>
-		<img src="https://gravatar.com/avatar/<%=gravatar%>?s=40" style="float:right;margin-left:3px;" />
+		<img src="https://gravatar.com/avatar/<%=gravatar%>?s=40" style="float:right;margin-left:3px;"/>
 		<%}%>
 		<span class="badge"><i class="icon-time"></i> <%=duration%> мин</span>
 		<em style="padding:5px 0; display:block;"><%=description%></em>
+
 		<div style="clear:both;"></div>
 	</div>
 </script>
