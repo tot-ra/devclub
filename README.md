@@ -29,6 +29,8 @@
 
 Установка
 ======
-Надо поставить git и <a href="http://getcomposer.org/download/">composer</a>. После checkout, запускаем `composer update` что-бы вытянуть все зависимости. 
+Надо поставить git и <a href="http://getcomposer.org/download/">composer</a>. После checkout, запускаем `composer update` что-бы вытянуть все зависимости.
+
 Потом изменяем SiteConfig.php и прописываем настройки - URL и доступ к mysql. В этоу базу надо таблички которые описаны в `vendor/Gratheon/Devclub/Docs/schema.sql`
-Добавляем в `app/front/cache/` папки куда будут генерироваться динамические файлы js, css, view и ставим на них права записи
+
+Добавляем в `vendor/Gratheon/Devclub/assets/` папки куда будут генерироваться динамические файлы css_cache, js_cache и view_cache и ставим на них права записи
