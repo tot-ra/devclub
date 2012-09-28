@@ -18,3 +18,8 @@ CREATE TABLE `devclub_vote` (
   KEY `FK_devclub_vote` (`storyID`),
   CONSTRAINT `FK_devclub_vote` FOREIGN KEY (`storyID`) REFERENCES `devclub_story` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `devclub_yearly_vote` (
+  `storyID` int(11) DEFAULT NULL,
+  `user` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

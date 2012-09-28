@@ -198,7 +198,13 @@ class Front extends \Gratheon\Core\Controller {
 
 	function list_completed_stories() {
 		$stories = $this->model('devclub_story');
-		$list = $stories->arr("status='completed'", "*, '' votes, '' rate, '0' voted, '' position");
+		$list = $stories->q(
+			"SELECT t1.*, COUNT(t2.user) votes, '' rate, COUNT(t3.user) voted, '' position
+			FROM devclub_story t1
+			LEFT JOIN devclub_yearly_vote t2 ON t1.ID=t2.storyID
+			LEFT JOIN devclub_yearly_vote t3 ON t1.ID=t3.storyID AND t3.user='".$this->getEmail()."'
+			WHERE t1.status='completed'
+			GROUP BY t1.ID");
 
 		echo json_encode($list);
 	}
@@ -272,7 +278,10 @@ class Front extends \Gratheon\Core\Controller {
 						AVG(t2.position) IS NULL AS emptyAllVotes,
 						t3.position,
 						t1.ID as id,
-						GROUP_CONCAT(t2.position ORDER BY t2.position ASC SEPARATOR ' ') distribution
+						GROUP_CONCAT(t2.position ORDER BY t2.position ASC SEPARATOR ' ') distribution,
+						COUNT(t2.user) votes,
+						COUNT(t3.user) voted
+
 
 					FROM devclub_story t1
 		            LEFT JOIN devclub_vote t2 ON t1.ID=t2.storyID
@@ -284,10 +293,10 @@ class Front extends \Gratheon\Core\Controller {
 		$list = $stories->q($query);
 
 		foreach ($list as &$topic) {
-
+/*
 			$topic->voted = $vote->int("storyID='" . $topic->ID . "' AND user='" . $this->getEmail() . "'", "COUNT(*)");
 			$topic->votes = $vote->int("storyID='" . $topic->ID . "'", "COUNT(user)");
-
+*/
 			if($rateVal=='totalCount'){
 				$topic->rate  = $topic->{$rateVal};
 			}
@@ -379,5 +388,24 @@ class Front extends \Gratheon\Core\Controller {
 		$name          = mysql_real_escape_string($_GET['term']);
 		$devclub_story = $this->model('devclub_story');
 		echo json_encode($devclub_story->arrint("authors LIKE '%$name%'", "DISTINCT(authors)"));
+	}
+
+	function yearly_vote(){
+		$yvotes = $this->model('devclub_yearly_vote');
+		if($_POST['ID'] && $this->getEmail()){
+			$yvotes->insert(array(
+				'storyID' => (int)$_POST['ID'],
+				'user' => $this->getEmail()
+			));
+		}
+		exit();
+	}
+
+	function yearly_unvote(){
+		$yvotes = $this->model('devclub_yearly_vote');
+		if($_POST['ID'] && $this->getEmail()){
+			$yvotes->delete("storyID = '".(int)$_POST['ID']."' AND user = '".$this->getEmail()."'");
+		}
+		exit();
 	}
 }

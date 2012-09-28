@@ -73,6 +73,10 @@ $(document).ready(function () {
 					if (view.model.get('email')) {
 						makeSortable(view.model.get('isAdmin'));
 					}
+					else{
+						$('.logged_in').hide();
+						$('.logged_out').show();
+					}
 				}
 			});
 		},
@@ -233,8 +237,12 @@ $(document).ready(function () {
 
 			$('*[rel=tooltip]', this.el).tooltip();
 
-			if (Devclub.NavBar.model.get('email') != '') {
+			if (Devclub.NavBar.model.get('email') != null) {
 				$('#personal_ul li').not('.voted').find('.vote').show();
+			}
+			else{
+				$('.logged_in').hide();
+				$('.logged_out').show();
 			}
 		},
 
@@ -281,7 +289,9 @@ $(document).ready(function () {
 			'click .close': 'deleteStory',
 			'click': 'slide',
 			'click .vote': 'vote',
-			'click .unvote': 'unvote'
+			'click .unvote': 'unvote',
+			'click .yearvote': 'yearvote',
+			'click .yearunvote': 'yearunvote'
 		},
 
 		slide: function () {
@@ -319,6 +329,24 @@ $(document).ready(function () {
 					Devclub.PersonalStoriesListView.collection.fetch();
 					Devclub.PublicStoriesListView.collection.fetch();
 				}
+			});
+			return false;
+		},
+
+		yearunvote: function(){
+			$.post(sys_url+'yearly_unvote/',{
+				'ID': this.model.get('ID')
+			},function(){
+				Devclub.CompletedStoriesListView.collection.fetch();
+			});
+			return false;
+		},
+
+		yearvote: function(){
+			$.post(sys_url+'yearly_vote/',{
+				'ID': this.model.get('ID')
+			},function(){
+				Devclub.CompletedStoriesListView.collection.fetch();
 			});
 			return false;
 		},

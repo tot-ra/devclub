@@ -101,12 +101,16 @@
 
 		<div class="alert alert-info">
 			<button class="close" data-dismiss="alert">×</button>
-			Сюда попадают отобранные организаторами темы
+			Сюда попадают отобранные организаторами темы для будущих встреч
 		</div>
 		<ul id="backlog" class="sortable" data-status="backlog"></ul>
 	</div>
 
 	<div id="completed" class="col hidden span5">
+		<div class="alert alert-info">
+			<button class="close" data-dismiss="alert">×</button>
+			Прошедшие темы можно выдвигать на <strong>доклад года</strong>. Голосование отдельное, простым большинством
+		</div>
 		<ul id="completed_ul" class="sortable" data-status="completed"></ul>
 	</div>
 
@@ -125,14 +129,19 @@
 
 
 	<% if(status=='icebox'){ %>
-	<a class="vote btn btn-mini" href="#">Like</a>
-	<a class="unvote btn btn-mini" href="#">unLike</a>
+	<a class="vote btn btn-mini logged_in" href="#">Like</a>
+	<a class="unvote btn btn-mini logged_in" href="#">unLike</a>
+	<% } %>
+
+	<% if(status=='completed'){ %>
+	<a class="yearvote btn btn-mini logged_in" href="#">+1</a>
+	<a class="yearunvote btn btn-mini logged_in" href="#">x</a>
+	<span class="badge" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
 	<% } %>
 
 	<% if(typeof(owner)!='undefined'){ %>
-
-	<a class="close" href="#">&times;</a>
-	<i class="icon-pencil"></i>
+	<a class="close logged_in" href="#">&times;</a>
+	<i class="icon-pencil logged_in"></i>
 	<% } %>
 
 
