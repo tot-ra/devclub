@@ -129,13 +129,13 @@
 
 
 	<% if(status=='icebox'){ %>
-	<a class="vote btn btn-mini logged_in" href="#">Like</a>
-	<a class="unvote btn btn-mini logged_in" href="#">unLike</a>
+	<a class="vote btn btn-mini logged_in" href="#"><i class="icon-thumbs-up"></i></a>
+	<a class="unvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
 	<% } %>
 
 	<% if(status=='completed'){ %>
-	<a class="yearvote btn btn-mini logged_in" href="#">+1</a>
-	<a class="yearunvote btn btn-mini logged_in" href="#">x</a>
+	<a class="yearvote btn btn-mini logged_in" href="#"><i class="icon-plus-sign"></i></a>
+	<a class="yearunvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
 	<span class="badge" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
 	<% } %>
 

@@ -196,6 +196,7 @@ class Front extends \Gratheon\Core\Controller {
 		echo json_encode($list);
 	}
 
+
 	function list_completed_stories() {
 		$stories = $this->model('devclub_story');
 		$list = $stories->q(
@@ -204,7 +205,8 @@ class Front extends \Gratheon\Core\Controller {
 			LEFT JOIN devclub_yearly_vote t2 ON t1.ID=t2.storyID
 			LEFT JOIN devclub_yearly_vote t3 ON t1.ID=t3.storyID AND t3.user='".$this->getEmail()."'
 			WHERE t1.status='completed'
-			GROUP BY t1.ID");
+			GROUP BY t1.ID
+			ORDER BY votes DESC");
 
 		echo json_encode($list);
 	}
@@ -390,6 +392,7 @@ class Front extends \Gratheon\Core\Controller {
 		echo json_encode($devclub_story->arrint("authors LIKE '%$name%'", "DISTINCT(authors)"));
 	}
 
+
 	function yearly_vote(){
 		$yvotes = $this->model('devclub_yearly_vote');
 		if($_POST['ID'] && $this->getEmail()){
@@ -400,6 +403,7 @@ class Front extends \Gratheon\Core\Controller {
 		}
 		exit();
 	}
+
 
 	function yearly_unvote(){
 		$yvotes = $this->model('devclub_yearly_vote');
