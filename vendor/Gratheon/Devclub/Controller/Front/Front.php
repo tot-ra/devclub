@@ -9,6 +9,7 @@ namespace Gratheon\Devclub\Controller\Front;
 class Front extends \Gratheon\Core\Controller {
 
 	private $admins = array(
+		//'artkurapov@gmail.com',
 		'soswow@gmail.com',
 		'ant.arhipov@gmail.com',
 		'jevgeni.holodkov@gmail.com',
@@ -207,6 +208,16 @@ class Front extends \Gratheon\Core\Controller {
 			WHERE t1.status='completed'
 			GROUP BY t1.ID
 			ORDER BY votes DESC");
+
+		foreach ($list as &$topic) {
+
+			$topic->owner = ($topic->creator_email==$this->getEmail()) || $this->checkAdmin();
+
+			$topic->gravatar = md5(strtolower(trim($topic->creator_email)));
+			unset($topic->creator_email);
+
+			//round(100 * (float)$vote->int("storyID='" . $topic->ID . "'", "1 + AVG(position)")) / 100;
+		}
 
 		echo json_encode($list);
 	}

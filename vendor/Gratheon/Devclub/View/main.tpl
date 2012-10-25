@@ -127,38 +127,42 @@
 {literal}
 <script type="text/template" id="story_item_template">
 
+	<img src="/devclub/vendor/Gratheon/Devclub/assets/img/drag_icon.gif" class="draghandle" />
+	<strong class="draghandle"><%=title%></strong>
 
-	<% if(status=='icebox'){ %>
-	<a class="vote btn btn-mini logged_in" href="#"><i class="icon-thumbs-up"></i></a>
-	<a class="unvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
-	<% } %>
-
-	<% if(status=='completed'){ %>
-	<a class="yearvote btn btn-mini logged_in" href="#"><i class="icon-plus-sign"></i></a>
-	<a class="yearunvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
-	<span class="badge" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
-	<% } %>
-
-	<% if(typeof(owner)!='undefined'){ %>
+	<% if(typeof(owner)!='undefined' && owner){ %>
 	<a class="close logged_in" href="#">&times;</a>
 	<i class="icon-pencil logged_in"></i>
 	<% } %>
 
+	<br /> 	<% if(status=='icebox'){ %>
+		<a class="vote btn btn-mini logged_in" href="#"><i class="icon-thumbs-up"></i></a>
+		<a class="unvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
+		<% } %>
+
+	<%=authors%>
 
 	<% if(rate) { %>
-	<span class="badge" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
-	<span class="badge badge-success" rel="tooltip" title="среднее по позициям: <%=distribution%>"><%=rate%></span>
-	<%
-	} %>
+	<span style="border-radius: 0 5px 5px 0;" class="label label-success" rel="tooltip" title="среднее по позициям: <%=distribution%>"><%=rate%></span>
+	<% } %>
+	<span class="label" style="border-radius:5px 0 0 5px;">
+		<i class="icon-time"></i> <%=duration%>
+		<% if(rate) { %>
+		<i rel="tooltip" title="число голосовавших" class="icon-user"></i> <%=votes%>
+		<% } %>
+	</span>
 
+	<% if(status=='completed'){ %>
+	<a class="yearvote btn btn-mini logged_in" href="#"><i class="icon-plus-sign"></i></a>
+	<a class="yearunvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
+	<span class="label label-important" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
+	<% } %>
 
-	<strong><%=title%></strong> &mdash; <%=authors%>
 
 	<div style="display:none;" class="extra">
 		<% if(typeof(gravatar)!='undefined'){%>
 		<img src="https://gravatar.com/avatar/<%=gravatar%>?s=40" style="float:right;margin-left:3px;"/>
 		<%}%>
-		<span class="badge"><i class="icon-time"></i> <%=duration%> мин</span>
 		<em style="padding:5px 0; display:block;"><%=description%></em>
 
 		<div style="clear:both;"></div>

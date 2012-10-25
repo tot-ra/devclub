@@ -166,6 +166,7 @@ $(document).ready(function () {
 			$('input[name=authors]', this.el).val(m.get('authors'));
 			$('textarea', this.el).val(m.get('description'));
 			this.modelID = m.get('ID');
+			$(this.el).show();
 		},
 
 		reset: function () {
@@ -309,6 +310,10 @@ $(document).ready(function () {
 			}
 		},
 
+		replaceURLWithHTMLLinks:function(text) {
+		    var exp = /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig;
+		    return text.replace(exp, "<a href='$1' target='_blank'>$3</a>");
+		},
 
 		vote: function () {
 			this.model.save({
@@ -321,6 +326,7 @@ $(document).ready(function () {
 			});
 			return false;
 		},
+
 		unvote: function () {
 			this.model.save({
 				'position': -1
@@ -362,10 +368,13 @@ $(document).ready(function () {
 			/*
 			if (this.model.get('creator_email') == Devclub.NavBar.model.get('email') || Devclub.NavBar.model.get('isAdmin')) {
 			}*/
-			tplvars.owner = this.model.get('owner');
+			if(/*Devclub.NavBar.model.get('isAdmin')==true ||*/ this.model.get('owner') == 1){
+				tplvars.owner = true;
+			}
 
 			if (tplvars.description != null) {
 				tplvars.description = tplvars.description.replace(/\n/g, '<br />');
+				tplvars.description = this.replaceURLWithHTMLLinks(tplvars.description);
 			}
 
 			var html = this.template(tplvars);
@@ -452,13 +461,14 @@ $(document).ready(function () {
 				});
 
 
-			}
+			},
+			handle: '.draghandle'
 		};
 
 		if (crosslist) {
 			opt.connectWith = ".sortable";
 		}
-		$('.sortable').sortable(opt).disableSelection();
+		$('.sortable').sortable(opt).find('.draghandle').disableSelection();
 	}
 
 
