@@ -201,13 +201,13 @@ class Front extends \Gratheon\Core\Controller {
 	function list_completed_stories() {
 		$stories = $this->model('devclub_story');
 		$list = $stories->q(
-			"SELECT t1.*, COUNT(t2.user) votes, '' rate, COUNT(t3.user) voted, '' position
+			"SELECT t1.*, ".($this->checkAdmin() ?  'COUNT(t2.user)' : "''")." votes, '' rate, COUNT(t3.user) voted, '' position
 			FROM devclub_story t1
 			LEFT JOIN devclub_yearly_vote t2 ON t1.ID=t2.storyID
 			LEFT JOIN devclub_yearly_vote t3 ON t1.ID=t3.storyID AND t3.user='".$this->getEmail()."'
 			WHERE t1.status='completed'
 			GROUP BY t1.ID
-			ORDER BY votes DESC");
+			ORDER BY ".($this->checkAdmin() ? 'votes' : 'date_added')." DESC");
 
 		foreach ($list as &$topic) {
 

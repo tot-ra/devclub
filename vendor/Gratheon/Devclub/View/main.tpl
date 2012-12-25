@@ -10,7 +10,7 @@
 
 			<ul class="nav">
 				<li>
-					<a href="#" class="login logged_out" title="Sign-in with BrowserID" style="{if $email}display: none;{/if}"><i class="icon-user icon-white"></i>
+					<a href="#" class="login logged_out" title="Mozilla Persona" style="{if $email}display: none;{/if}"><i class="icon-user icon-white"></i>
 						Войти</a></li>
 
 				<li>
@@ -38,7 +38,7 @@
 				<li><a href="#"><strong id="mail">{$email}</strong></a></li>
 				<li><a href="https://github.com/Gratheon/devclub">About</a></li>
 				<li class="logged_in" style="{if !$email}display: none;{/if}">
-					<a href="#" id="logout" title="Sign-in with BrowserID"> Выйти
+					<a href="#" id="logout" title="Mozilla Persona"> Выйти
 						<i class="icon-off icon-white"></i></a></li>
 			</ul>
 		</div>
@@ -109,7 +109,7 @@
 	<div id="completed" class="col hidden span5">
 		<div class="alert alert-info">
 			<button class="close" data-dismiss="alert">×</button>
-			Прошедшие темы можно выдвигать на <strong>доклад года</strong>. Голосование отдельное, простым большинством
+			Прошедшие темы можно выдвигать на <strong>доклад года</strong>. Голосование отдельное, <strong>скрытое</strong>, простым большинством
 		</div>
 		<ul id="completed_ul" class="sortable" data-status="completed"></ul>
 	</div>
@@ -155,7 +155,7 @@
 	<% if(status=='completed'){ %>
 	<a class="yearvote btn btn-mini logged_in" href="#"><i class="icon-plus-sign"></i></a>
 	<a class="yearunvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
-	<span class="label label-important" rel="tooltip" title="число голосовавших"><i class="icon-user"></i> <%=votes%></span>
+	<span class="label label-important" rel="tooltip" title="число голосовавших скрыто"><i class="icon-user"></i> <%=votes%></span>
 	<% } %>
 
 

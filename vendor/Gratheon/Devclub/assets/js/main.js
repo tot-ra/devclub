@@ -76,11 +76,16 @@ $(document).ready(function () {
 					else{
 						$('.logged_in').hide();
 						$('.logged_out').show();
+						$('.nav a.logged_out').popover({
+							'content':'Войдите для голосования и добавления докладов',
+							'title':'Подсказка КО',
+							'placement':'bottom',
+							'trigger':'hover'
+						}).popover('show');
 					}
 				}
 			});
 		},
-
 
 		toggleAbout: function () {
 			$('#about').toggle();
@@ -124,6 +129,7 @@ $(document).ready(function () {
 								}
 
 								Devclub.PersonalStoriesListView.collection.fetch();
+								Devclub.CompletedStoriesListView.collection.fetch();
 
 								makeSortable(view.model.get('isAdmin'));
 								//loggedIn(res);
@@ -143,9 +149,12 @@ $(document).ready(function () {
 
 		logout: function () {
 			navigator.id.logout();
-			$.get(sys_url + 'devclub/logout/', function () {
+			$.get(sys_url + 'logout/', function () {
+//				Devclub.PersonalStoriesListView.collection.fetch();
+//				Devclub.CompletedStoriesList.collection.fetch();
 				window.location.reload();
 			});
+			return false;
 
 		}
 	});
@@ -425,6 +434,7 @@ $(document).ready(function () {
 		routes: {
 			"sort/:order": "sort",
 			"list/:list": "page",
+			"top": "top",
 			"/*":"void"
 		},
 
@@ -435,6 +445,13 @@ $(document).ready(function () {
 		sort: function (order) {
 			Devclub.PublicStoriesListView.collection.order = order;
 			Devclub.PublicStoriesListView.collection.fetch();
+		},
+
+		top: function(){
+			$('#public').addClass('hidden');
+			$('#completed').removeClass('hidden');
+			$('a[data-toggle=completed]').parent().addClass('active');
+			$('a[data-toggle=public]').parent().removeClass('active');
 		}
 	});
 
