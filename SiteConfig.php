@@ -3,20 +3,23 @@
  * Configuration class. Stores all sensitive info, including general passwords, DB connections etc.
  */
 
-define('app_path', '/Gratheon/Devclub');
-define('sys_url', "http://localhost/devclub/");
-define('sys_url_rel', "/devclub/");
+define('sys_url', "http://devclub.gratheon.com/");
+define('sys_url_rel', "/");
 
-ini_set('display_errors', 1);
-error_reporting(-1);
 
 class SiteConfig extends Gratheon\Core\Config {
+
+	public $routes = array(
+		'front'  => '/Gratheon/Devclub',
+		'content'=> '/Gratheon/CMS'
+	);
+
 	public $db = array(
 		0 => array(
-			'engine'    => 'Mysqli',
+			'engine'    => 'PDO',
 			'server'    => '',
-			'database'  => '',
-			'login'     => '',
+			'database'  => 'devclub',
+			'login'     => 'devclub',
 			'password'  => ''
 		)
 	);

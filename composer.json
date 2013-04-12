@@ -9,8 +9,8 @@
 	],
 	"require": {
 		"php": ">=5.3.0",
-		"smarty/smarty": "3.*",
-		"twitter/bootstrap": ">=2.1",
+		"smarty/smarty": "3.1.11",
+		"twitter/bootstrap": "2.2",
 		"jquery/jquery": ">=1.7.2",
 		"backbonejs/backbonejs": ">=0.9.2",
 		"backbonejs/underscorejs": ">=1.3.3",
@@ -29,7 +29,7 @@
 		{
 			"type": "package",
 			"package": {
-				"version": "2.1",
+				"version": "2.3",
 				"license": "Apache-2.0",
 				"name": "twitter/bootstrap",
 				"dist": {
@@ -38,6 +38,19 @@
 				}
 			}
 		},
+		{
+			"type": "package",
+			"package": {
+				"version": "2.2",
+				"license": "Apache-2.0",
+				"name": "twitter/bootstrap",
+				"dist": {
+					"url": "https://github.com/Gratheon/bootstrap/archive/master.zip",
+					"type": "zip"
+				}
+			}
+		},
+
 		{
 			"type": "package",
 			"package": {
@@ -50,6 +63,7 @@
 				}
 			}
 		},
+
 		{
 			"type": "package",
 			"package": {
@@ -92,11 +106,6 @@
 				"dist": {
 					"type": "zip",
 					"url": "http://www.smarty.net/files/Smarty-3.1.11.zip"
-				},
-				"source": {
-					"type": "svn",
-					"url": "http://smarty-php.googlecode.com/svn/",
-					"reference": "tags/Smarty_3_1_11/distribution/"
 				}
 			}
 		},

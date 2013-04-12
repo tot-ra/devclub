@@ -404,6 +404,18 @@ class Front extends \Gratheon\Core\Controller {
 	}
 
 
+	function yearly_report(){
+		if(!$this->checkAdmin()){
+			echo "Login as admin first";
+			die();
+		}
+		$yvotes = $this->model('devclub_yearly_vote');
+		$results = $yvotes->arr("1=1","devclub_yearly_vote.*, devclub_story.title","devclub_yearly_vote INNER JOIN devclub_story ON devclub_story.id=devclub_yearly_vote.storyID");
+
+		echo json_encode($results);
+	}
+
+
 	function yearly_vote(){
 		$yvotes = $this->model('devclub_yearly_vote');
 		if($_POST['ID'] && $this->getEmail()){
