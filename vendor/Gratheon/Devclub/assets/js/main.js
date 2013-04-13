@@ -4,6 +4,7 @@ var Devclub = {
 	Collections: [],
 	Models: []
 };
+
 $(document).ready(function () {
 
 	//Models
@@ -257,9 +258,9 @@ $(document).ready(function () {
 		},
 
 		add: function (model) {
-			var contact_model = new Devclub.Models.Story(model);
+//			var contact_model = new Devclub.Models.Story(model);
 			var view = new Devclub.Views.Story({
-				model: contact_model
+				model: model
 			});
 
 			var html = view.render().el;

@@ -1,0 +1,148 @@
+/**
+ * @author Artjom Kurapov
+ * @since 20.06.12 16:25
+ **/
+
+.storyRow {
+	transition: all 2s;
+
+	.col {
+		border: 1px dotted #bebebe;
+		padding: 3px;
+		border-radius: 5px;
+		margin-bottom: 10px;
+
+		h2 {
+			background-color: #dadada;
+			padding: 0 10px;
+		}
+
+		ul {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+		}
+
+		li {
+			list-style: none;
+			padding: 2px 10px;
+			margin: 2px;
+			border: 1px solid rgba(0, 158, 248, 0.41);
+			background-color: rgba(0, 164, 255, 0.11);
+			border-radius: 3px;
+			display: block;
+			clear: both;
+
+			line-height: 1em;
+
+			.leftTop, .leftBottom {
+				width: 70%;
+				min-width:300px;
+				float: left;
+			}
+			.rightTop, .rightBottom {
+				width: 25%;
+				min-width:180px;
+				float: right;
+			}
+
+			.rightBottom{
+				font-family: Consolas;
+				min-width:100px;
+			}
+
+			.icon-pencil {
+				float: right;
+				opacity: 0.2;
+				margin: 2px 4px 0 0;
+				cursor: pointer;
+
+				&:hover {
+					opacity: 0.4;
+				}
+			}
+
+			&.voted {
+				border: 1px solid #f4d313;
+				background-color: #fff9dc;
+			}
+
+			.label {
+				float: right;
+			}
+		}
+
+		.vote {
+			display: none;
+		}
+	}
+}
+
+.draghandle {
+	cursor: move;
+}
+
+#icebox li {
+	.vote,
+	.unvote {
+		float: right;
+		margin-left: 5px;
+	}
+
+	.voted .unvote {
+		display: inline-block;
+	}
+}
+
+#public img.draghandle,
+#icebox li .unvote,
+#icebox li.voted .vote,
+#openspace li .label,
+#icebox li .label,
+#public li .icon-pencil,
+#public li .vote,
+#public li .unvote,
+#public li .close {
+	display: none;
+}
+
+.navbar-inner{
+	border-radius: 0;
+}
+
+@media screen and (max-width: 767px){
+	body{
+		padding:0;
+	}
+}
+@media screen and (min-width: 800px) {
+	.storyRow {
+		display: flex;
+		display: -webkit-flex;
+
+		.col {
+			li {
+				.leftTop{
+					display: inline-block;
+					width:40%;
+					float:none;
+				}
+				.rightTop{
+					display: inline-block;
+					width:5%;
+					float:none;
+				}
+				.leftBottom{
+					display: inline-block;
+					width:20%;
+					float:none;
+				}
+				.rightBottom {
+					display: inline-block;
+					width:20px;
+					float:none;
+				}
+			}
+		}
+	}
+}
