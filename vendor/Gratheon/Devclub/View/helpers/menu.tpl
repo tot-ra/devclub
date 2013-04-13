@@ -1,7 +1,7 @@
 <div id="navbar" class="navbar navbar-inverse">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="#">Devclub: копилка докладов</a>
+			<a class="brand" href="#"><img src="/vendor/Gratheon/Devclub/assets/img/devclub_mini_logo.png" alt="" /> Devclub: копилка докладов</a>
 
 			<ul class="nav">
 				<li>
