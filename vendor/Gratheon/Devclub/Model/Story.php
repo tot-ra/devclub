@@ -132,15 +132,22 @@ class Story extends \Gratheon\Core\Model {
 		);
 	}
 
-	public function postProcessStoryList($list, $userEmail, $isAdmin){
-		if($list){
+
+	public function postProcessStoryList($list, $userEmail, $isAdmin) {
+		if($list) {
 			foreach($list as &$topic) {
-				$topic->owner = ($topic->creator_email == $userEmail) || $isAdmin;
+				$topic->owner    = ($topic->creator_email == $userEmail) || $isAdmin;
 				$topic->gravatar = md5(strtolower(trim($topic->creator_email)));
 				unset($topic->creator_email);
 			}
 		}
 
 		return $list;
+	}
+
+
+	public function getAuthorsByNamePart($name) {
+		$authors = $this->prepare(['name' => $name])->arrint("authors LIKE concat(:name, '%') ", "DISTINCT(authors)");
+		return $authors;
 	}
 }

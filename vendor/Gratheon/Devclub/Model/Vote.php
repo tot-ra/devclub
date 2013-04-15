@@ -36,36 +36,39 @@ class Vote extends \Gratheon\Core\Model {
 
 
 	public function updatePositions($storyID, $position, $email) {
+		//remove previous vote for this story and user
 		$this->delete("storyID='$storyID' AND `user`='" . $email . "'");
 
 
 		//recreate proper order for single user
 		$userVotes = $this->getUserVotedStoriesOrdered($email);
-		$i = 0;
+		$i         = 0;
 
 		if($userVotes) {
 			foreach($userVotes as $vote) {
-				if($i == $position) {
+				//insert new vote and increment the following positions by 1
+				if($position>=$i && $position<($i+1)) {
 					$this->insert(array(
 						'storyID'  => $storyID,
 						'user'     => $email,
-						'position' => $position
+						'position' => (string)$position
 					));
 					$i++;
 				}
 
 				$this->update(
-					['position' => $i],
+					['position' => (string)$i],
 					"storyID='{$vote->storyID}' AND user='" . $email . "'"
 				);
+
 				$i++;
 			}
 
-			if($position >= count($userVotes)) {
+			if((int)$position >= count($userVotes)) {
 				$this->insert(array(
 					'storyID'  => $storyID,
 					'user'     => $email,
-					'position' => count($userVotes)
+					'position' => $i//count($userVotes)
 				));
 			}
 		}

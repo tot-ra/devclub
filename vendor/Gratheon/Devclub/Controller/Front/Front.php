@@ -16,8 +16,11 @@ class Front extends \Gratheon\Core\Controller {
 		$this->add_css('/vendor/twitter/bootstrap/css/bootstrap-responsive.css');
 		$this->add_css('main.css', false);
 		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.all.css', false);
+//		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.base.css', false);
+//		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.core.css', false);
+//		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.autocomplete.css', false);
+//		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.selectable.css', false);
 
-		$this->add_js('https://browserid.org/include.js', false);
 		$this->add_js('/vendor/jquery/jquery/jquery-1.7.2.js');
 		$this->add_js('/vendor/twitter/bootstrap/js/bootstrap.min.js');
 		$this->add_js('/vendor/backbonejs/underscorejs/underscore-min.js');
@@ -30,6 +33,7 @@ class Front extends \Gratheon\Core\Controller {
 		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.droppable.js');
 		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.sortable.js');
 		$this->add_js('touch-punch.js');
+		$this->add_js('https://browserid.org/include.js', false);
 		$this->add_js('main.js');
 
 		$this->add_js_var('sys_url', sys_url_rel);
@@ -54,7 +58,7 @@ class Front extends \Gratheon\Core\Controller {
 		$storyModel = $this->model('Story');
 		$params     = (array)json_decode(file_get_contents('php://input'));
 
-		$position = $params['position'];
+		$position = (int)$params['position'];
 		$status   = $params['status'];
 
 		unset($params['position']);
@@ -172,9 +176,12 @@ class Front extends \Gratheon\Core\Controller {
 			return false;
 		}
 
-		$name          = mysql_real_escape_string($this->in->get['term']);
-		$devclub_story = $this->model('devclub_story');
-		echo json_encode($devclub_story->arrint("authors LIKE '%$name%'", "DISTINCT(authors)"));
+		/** @var $storyModel \Gratheon\Devclub\Model\Story */
+		$name          = $this->in->get['term'];
+		$storyModel = $this->model('Story');
+
+		$list = $storyModel->getAuthorsByNamePart($name);
+		echo json_encode($list);
 	}
 
 	public function yearly_report() {

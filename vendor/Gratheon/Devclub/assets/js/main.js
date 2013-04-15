@@ -491,7 +491,7 @@ $(document).ready(function () {
 
 
 	$("#story_form input[name=authors]").autocomplete({
-		source: sys_url + "devclub/author_list",
+		source: sys_url + "author_list",
 		minLength: 2,
 		select: function (event, ui) {
 		}
