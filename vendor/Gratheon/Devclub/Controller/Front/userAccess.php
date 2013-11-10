@@ -11,12 +11,24 @@ trait userAccess {
 		'yuri.mulenko@gmail.com',
 		'draco.ater@gmail.com',
 		'kirill.linnik@mail.ee',
-		'andrei.solntsev@gmail.com'
+		'andrei.solntsev@gmail.com',
+		'webervin@gmail.com'
 	);
 
-	private function getEmail() {
-		return $_SESSION[__CLASS__]['auth_email'];
+
+	private function getSessionValue($key) {
+		if(!isset($_SESSION[__CLASS__])) {
+			return null;
+		}
+
+		return $_SESSION[__CLASS__][$key];
 	}
+
+
+	private function getEmail() {
+		return $this->getSessionValue('auth_email');
+	}
+
 
 	public function logout() {
 		unset($_SESSION[__CLASS__]['auth_email']);

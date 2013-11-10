@@ -14,7 +14,7 @@
 	spiderman
 </div>
 
-<ul class="nav nav-pills">
+<ul class="nav nav-pills" id="list_type_selection">
 	<li class="active"><a data-toggle="public" href="#"> Публичный рейтинг {if $distinct_users}
 		<span class="label" rel="tooltip" title="Число проголосовавших">{$distinct_users}</span>{/if}</a></li>
 	<li class=""><a data-toggle="personal" href="#"> Личный топ</a></li>

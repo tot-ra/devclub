@@ -1,8 +1,8 @@
 var Devclub = {
-	Routers: [],
-	Views: [],
+	Routers    : [],
+	Views      : [],
 	Collections: [],
-	Models: []
+	Models     : []
 };
 
 $(document).ready(function () {
@@ -21,32 +21,37 @@ $(document).ready(function () {
 	});
 
 	//Collections
-	Devclub.Collections.ActiveStories = Backbone.Collection.extend({
+	Devclub.Collections.OpenspaceStories = Backbone.Collection.extend({
+		model: Devclub.Models.Story,
 		url: function () {
 			return sys_url + 'list_openspace_stories/';
 		}
 	});
 
-	Devclub.Collections.BacklogStories = Backbone.Collection.extend({
+	Devclub.Collections.PlannedStories = Backbone.Collection.extend({
+		model: Devclub.Models.Story,
 		url: function () {
 			return sys_url + 'list_backlog_stories/';
 		}
 	});
 
-	Devclub.Collections.IceboxStories = Backbone.Collection.extend({
+	Devclub.Collections.PersonalStories = Backbone.Collection.extend({
+		model: Devclub.Models.Story,
 		url: function () {
 			return sys_url + 'list_public_stories/?sort=mine';
 		}
 	});
 
-	Devclub.Collections.PublicStories = Backbone.Collection.extend({
+	Devclub.Collections.PublicSortedStories = Backbone.Collection.extend({
+		model: Devclub.Models.Story,
 		order: 'harmonic_weight',
-		url: function () {
-			return sys_url + 'list_public_stories/?sort='+ this.order;
+		url  : function () {
+			return sys_url + 'list_public_stories/?sort=' + this.order;
 		}
 	});
 
 	Devclub.Collections.CompletedStories = Backbone.Collection.extend({
+		model: Devclub.Models.Story,
 		url: function () {
 			return sys_url + 'list_completed_stories/';
 		}
@@ -54,12 +59,12 @@ $(document).ready(function () {
 
 	//Views
 	Devclub.Views.NavBar = Backbone.View.extend({
-		el: '#navbar',
+		el    : '#navbar',
 		events: {
-			'click .about_trigger': 'toggleAbout',
+			'click .about_trigger'     : 'toggleAbout',
 			'click .story_form_trigger': 'toggleForm',
-			'click .login': 'login',
-			'click #logout': 'logout'
+			'click .login'             : 'login',
+			'click #logout'            : 'logout'
 		},
 
 		initialize: function () {
@@ -74,14 +79,14 @@ $(document).ready(function () {
 					if (view.model.get('email')) {
 						makeSortable(view.model.get('isAdmin'));
 					}
-					else{
+					else {
 						$('.logged_in').hide();
 						$('.logged_out').show();
 						$('.nav a.logged_out').popover({
-							'content':'Войдите для голосования и добавления докладов',
-							'title':'Подсказка КО',
-							'placement':'bottom',
-							'trigger':'hover'
+							'content'  : 'Войдите для голосования и добавления докладов',
+							'title'    : 'Подсказка КО',
+							'placement': 'bottom',
+							'trigger'  : 'hover'
 						}).popover('show');
 					}
 				}
@@ -102,11 +107,11 @@ $(document).ready(function () {
 				// got an assertion, now send it up to the server for verification
 				if (assertion !== null) {
 					$.ajax({
-						type: 'POST',
+						type    : 'POST',
 						dataType: 'json',
 
-						url: sys_url + 'login/',
-						data: { assertion: assertion },
+						url    : sys_url + 'login/',
+						data   : { assertion: assertion },
 						success: function (res, status, xhr) {
 
 							if (res === null) {
@@ -129,14 +134,14 @@ $(document).ready(function () {
 									$('.isAdmin').show();
 								}
 
-								Devclub.PersonalStoriesListView.collection.fetch();
-								Devclub.CompletedStoriesListView.collection.fetch();
+								Devclub.PersonalStoriesListView.collection.fetch({reset: true});
+								Devclub.CompletedStoriesListView.collection.fetch({reset: true});
 
 								makeSortable(view.model.get('isAdmin'));
 								//loggedIn(res);
 							}
 						},
-						error: function (res, status, xhr) {
+						error  : function (res, status, xhr) {
 							alert("login failure" + res);
 						}
 					});
@@ -161,9 +166,9 @@ $(document).ready(function () {
 	});
 
 	Devclub.Views.AddForm = Backbone.View.extend({
-		el: '#story_form',
+		el    : '#story_form',
 		events: {
-			"click .btn": 'submit',
+			"click .btn"       : 'submit',
 			"click .btn-cancel": 'reset'
 		},
 
@@ -208,10 +213,10 @@ $(document).ready(function () {
 			var view = this;
 
 			var data = {
-				'title': $('input[name=title]', this.el).val(),
-				'authors': $('input[name=authors]', this.el).val(),
+				'title'      : $('input[name=title]', this.el).val(),
+				'authors'    : $('input[name=authors]', this.el).val(),
 				'description': $('textarea:first', this.el).val(),
-				'duration': $('select', this.el).val()
+				'duration'   : $('select', this.el).val()
 			};
 
 			if (this.modelID) {
@@ -235,25 +240,26 @@ $(document).ready(function () {
 	Devclub.Views.StoriesList = Backbone.View.extend({
 		initialize: function () {
 			this.collection.bind('reset', this.reset, this);
-			this.collection.fetch();
+			this.collection.fetch({
+				reset: true
+			});
 		},
 
 		reset: function (modelList) {
 			$(this.el).html('');
 			var me = this;
-
 			$.each(modelList.models, function (i, model) {
 				me.add(model);
 			});
 
-			$('*[rel=tooltip]', this.el).tooltip();
+//			$('*[rel=tooltip]', this.el).tooltip();
 
 			if (Devclub.NavBar.model.get('email') != null) {
 				$('#personal_ul li').not('.voted').find('.vote').show();
 			}
-			else{
-				$('.logged_in').hide();
-				$('.logged_out').show();
+			else {
+				this.$('.logged_in').hide();
+				this.$('.logged_out').show();
 			}
 		},
 
@@ -263,9 +269,7 @@ $(document).ready(function () {
 				model: model
 			});
 
-			var html = view.render().el;
-
-			$(this.el).append(html);
+			$(this.el).append(view.render().el);
 
 //       		view.bind('selected', this.onPersonSelected, this);
 //       		view.bind('deselected', this.onPersonDeselected, this);
@@ -293,16 +297,16 @@ $(document).ready(function () {
 	});
 
 	Devclub.Views.Story = Backbone.View.extend({
-		tagName: 'li',
+		tagName : 'li',
 		template: _.template($("#story_item_template").html()),
-		events: {
+		events  : {
 			'click .icon-pencil': 'edit',
-			'click .close': 'deleteStory',
-			'click': 'slide',
-			'click .vote': 'vote',
-			'click .unvote': 'unvote',
-			'click .yearvote': 'yearvote',
-			'click .yearunvote': 'yearunvote'
+			'click .close'      : 'deleteStory',
+			'click'             : 'slide',
+			'click .vote'       : 'vote',
+			'click .unvote'     : 'unvote',
+			'click .yearvote'   : 'yearvote',
+			'click .yearunvote' : 'yearunvote'
 		},
 
 		slide: function () {
@@ -314,24 +318,33 @@ $(document).ready(function () {
 			if (confirm("А вы уверены, что хотите НАВСЕГДА удалить из списка?")) {
 				$.get(sys_url + 'delete_story/' + this.model.get('ID'), function () {
 					view.remove();
-					Devclub.PersonalStoriesListView.collection.fetch();
-					Devclub.PublicStoriesListView.collection.fetch();
+					Devclub.PersonalStoriesListView.collection.fetch({reset: true});
+					Devclub.PublicStoriesListView.collection.fetch({reset: true});
 				});
 			}
 		},
 
-		replaceURLWithHTMLLinks:function(text) {
-		    var exp = /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig;
-		    return text.replace(exp, "<a href='$1' target='_blank'>$3</a>");
+		replaceURLWithHTMLLinks: function (text) {
+			var exp = /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?\/=~_|!:,.;]*)[-A-Z0-9+&@#\/%=~_|])/ig;
+			return text.replace(exp, "<a href='$1' target='_blank'>$3</a>");
 		},
 
 		vote: function () {
+			console.log(this.model);
 			this.model.save({
-				'position': 0
+				'position': 0,
+				'status': 'icebox'
 			}, {
+				patch:true,
+				success: function(){
+					console.log('success');
+				},
+				error: function(){
+					console.log('error');
+				},
 				complete: function (model, response) {
-					Devclub.PersonalStoriesListView.collection.fetch();
-					Devclub.PublicStoriesListView.collection.fetch();
+					Devclub.PersonalStoriesListView.collection.fetch({reset: true});
+					Devclub.PublicStoriesListView.collection.fetch({reset: true});
 				}
 			});
 			return false;
@@ -339,30 +352,32 @@ $(document).ready(function () {
 
 		unvote: function () {
 			this.model.save({
-				'position': -1
+				'position': -1,
+				'status': 'icebox'
 			}, {
+				patch:true,
 				complete: function (model, response) {
-					Devclub.PersonalStoriesListView.collection.fetch();
-					Devclub.PublicStoriesListView.collection.fetch();
+					Devclub.PersonalStoriesListView.collection.fetch({reset: true});
+					Devclub.PublicStoriesListView.collection.fetch({reset: true});
 				}
 			});
 			return false;
 		},
 
-		yearunvote: function(){
-			$.post(sys_url+'yearly_unvote/',{
+		yearunvote: function () {
+			$.post(sys_url + 'yearly_unvote/', {
 				'ID': this.model.get('ID')
-			},function(){
-				Devclub.CompletedStoriesListView.collection.fetch();
+			}, function () {
+				Devclub.CompletedStoriesListView.collection.fetch({reset: true});
 			});
 			return false;
 		},
 
-		yearvote: function(){
-			$.post(sys_url+'yearly_vote/',{
+		yearvote: function () {
+			$.post(sys_url + 'yearly_vote/', {
 				'ID': this.model.get('ID')
-			},function(){
-				Devclub.CompletedStoriesListView.collection.fetch();
+			}, function () {
+				Devclub.CompletedStoriesListView.collection.fetch({reset: true});
 			});
 			return false;
 		},
@@ -376,9 +391,9 @@ $(document).ready(function () {
 			var tplvars = this.model.toJSON();
 
 			/*
-			if (this.model.get('creator_email') == Devclub.NavBar.model.get('email') || Devclub.NavBar.model.get('isAdmin')) {
-			}*/
-			if(/*Devclub.NavBar.model.get('isAdmin')==true ||*/ this.model.get('owner') == 1){
+			 if (this.model.get('creator_email') == Devclub.NavBar.model.get('email') || Devclub.NavBar.model.get('isAdmin')) {
+			 }*/
+			if (/*Devclub.NavBar.model.get('isAdmin')==true ||*/ this.model.get('owner') == 1) {
 				tplvars.owner = true;
 			}
 
@@ -411,19 +426,19 @@ $(document).ready(function () {
 	Devclub.addView = new Devclub.Views.AddForm();
 
 	Devclub.OpenspaceListView = new Devclub.Views.OpenspaceList({
-		collection: new Devclub.Collections.ActiveStories()
+		collection: new Devclub.Collections.OpenspaceStories()
 	});
 
 	Devclub.backlogStoriesListView = new Devclub.Views.BacklogStoriesList({
-		collection: new Devclub.Collections.BacklogStories()
+		collection: new Devclub.Collections.PlannedStories()
 	});
 
 	Devclub.PersonalStoriesListView = new Devclub.Views.PersonalStoriesList({
-		collection: new Devclub.Collections.IceboxStories()
+		collection: new Devclub.Collections.PersonalStories()
 	});
 
 	Devclub.PublicStoriesListView = new Devclub.Views.PublicStoriesList({
-		collection: new Devclub.Collections.PublicStories()
+		collection: new Devclub.Collections.PublicSortedStories()
 	});
 
 	Devclub.CompletedStoriesListView = new Devclub.Views.CompletedStoriesList({
@@ -434,21 +449,52 @@ $(document).ready(function () {
 	Devclub.Routers.Main = Backbone.Router.extend({
 		routes: {
 			"sort/:order": "sort",
-			"list/:list": "page",
-			"top": "top",
-			"/*":"void"
+			"list/:pages": "list",
+			"top"        : "top",
+			""         : "void"
 		},
 
-		void:function(){
-
+		void: function () {
+			console.log('void route path called');
+			$('#public').removeClass('hidden');
+			$('a[data-toggle=public]').parent().addClass('active');
 		},
 
 		sort: function (order) {
 			Devclub.PublicStoriesListView.collection.order = order;
-			Devclub.PublicStoriesListView.collection.fetch();
+			Devclub.PublicStoriesListView.collection.fetch({reset: true});
 		},
 
-		top: function(){
+		list: function (pages) {
+			pages = pages.split(',');
+
+			$('#public').addClass('hidden');
+			$('a[data-toggle=public]').parent().removeClass('active');
+
+			if (_.indexOf(pages, 'public') >= 0) {
+				$('#public').removeClass('hidden');
+				$('a[data-toggle=public]').parent().addClass('active');
+			}
+
+			if (_.indexOf(pages, 'completed') >= 0) {
+				$('#completed').removeClass('hidden');
+				$('a[data-toggle=completed]').parent().addClass('active');
+			}
+			if (_.indexOf(pages, 'plans') >= 0) {
+				$('#plans').removeClass('hidden');
+				$('a[data-toggle=plans]').parent().addClass('active');
+			}
+			if (_.indexOf(pages, 'openspace') >= 0) {
+				$('#openspace').removeClass('hidden');
+				$('a[data-toggle=openspace]').parent().addClass('active');
+			}
+			if (_.indexOf(pages, 'personal') >= 0) {
+				$('#personal').removeClass('hidden');
+				$('a[data-toggle=personal]').parent().addClass('active');
+			}
+		},
+
+		top: function () {
 			$('#public').addClass('hidden');
 			$('#completed').removeClass('hidden');
 			$('a[data-toggle=completed]').parent().addClass('active');
@@ -463,18 +509,18 @@ $(document).ready(function () {
 
 	function makeSortable(crosslist) {
 		var opt = {
-			stop: function (event, ui) {
+			stop  : function (event, ui) {
 				//$(ui.item).parent().attr('id');
 				var model = new Devclub.Models.Story({
 					id: $(ui.item).data('sid')
 				});
 				model.save({
-					'status': $(ui.item).parent().data('status'),
+					'status'  : $(ui.item).parent().data('status'),
 					'position': $(ui.item).index()
 				}, {
 					complete: function (model, response) {
-						Devclub.PersonalStoriesListView.collection.fetch();
-						Devclub.PublicStoriesListView.collection.fetch();
+						Devclub.PersonalStoriesListView.collection.fetch({reset: true});
+						Devclub.PublicStoriesListView.collection.fetch({reset: true});
 					}
 				});
 
@@ -491,15 +537,25 @@ $(document).ready(function () {
 
 
 	$("#story_form input[name=authors]").autocomplete({
-		source: sys_url + "author_list",
+		source   : sys_url + "author_list",
 		minLength: 2,
-		select: function (event, ui) {
+		select   : function (event, ui) {
 		}
 	});
 
-	$('.nav-pills li a').click(function(){
 
-		$('#'+$(this).data('toggle')).toggleClass('hidden');
+	$('#list_type_selection li a').click(function () {
+		$('#' + $(this).data('toggle')).toggleClass('hidden');
 		$(this).parent().toggleClass('active');
+
+		var activeTabs = [];
+		$('#list_type_selection li a').each(function () {
+			if ($(this).parent().hasClass('active')) {
+				activeTabs.push($(this).data('toggle'));
+			}
+		});
+
+		Devclub.Router.navigate('list/' + activeTabs.join(','));
+		return false;
 	});
 });

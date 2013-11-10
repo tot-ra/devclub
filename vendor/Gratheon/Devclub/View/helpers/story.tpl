@@ -29,7 +29,9 @@
 		<% if(obj.gravatar){%>
 			<img src="http://gravatar.com/avatar/<%=obj.gravatar%>?s=20" style="float:left;margin-right:5px;"/>
 		<%}%>
-		<%=obj.authors%>
+		<span class="authors">
+			<%=obj.authors%>
+		</span>
 
 		<% if(obj.status=='completed'){ %>
 			<a class="yearvote btn btn-mini logged_in" href="#"><i class="icon-plus-sign"></i></a>

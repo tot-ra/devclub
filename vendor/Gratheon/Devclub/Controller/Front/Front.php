@@ -21,10 +21,14 @@ class Front extends \Gratheon\Core\Controller {
 //		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.autocomplete.css', false);
 //		$this->add_css('/vendor/jquery/jquery-ui/themes/base/jquery.ui.selectable.css', false);
 
-		$this->add_js('/vendor/jquery/jquery/jquery-1.7.2.js');
+		$this->add_js('jquery-2.0.3.js');
+		$this->add_js('underscore-1.5.2.js');
+		$this->add_js('backbone-1.1.0.js');
+//		$this->add_js('/vendor/jquery/jquery/jquery-1.7.2.js');
+
 		$this->add_js('/vendor/twitter/bootstrap/js/bootstrap.min.js');
-		$this->add_js('/vendor/backbonejs/underscorejs/underscore-min.js');
-		$this->add_js('/vendor/backbonejs/backbonejs/backbone-min.js');
+//		$this->add_js('/vendor/backbonejs/underscorejs/underscore-min.js');
+//		$this->add_js('/vendor/backbonejs/backbonejs/backbone-min.js');
 		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.core.js');
 		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.widget.js');
 		$this->add_js('/vendor/jquery/jquery-ui/ui/jquery.ui.mouse.js');
@@ -79,7 +83,6 @@ class Front extends \Gratheon\Core\Controller {
 			}
 
 			$story = $storyModel->obj($ID);
-			echo json_encode($story);
 		}
 		else {
 			if($params['duration'] > 0) {
