@@ -103,7 +103,21 @@ class Front extends \Gratheon\Core\Controller {
 			$votesModel->updatePositions($ID, $position, $this->getEmail());
 		}
 
-		echo json_encode($story);
+		$this->outputJSONHeaders();
+		echo $this->wrapInJSONP(json_encode($story));
+	}
+
+	protected function wrapInJSONP($data){
+		if(isset($_GET['callback'])){
+			$data = $_GET['callback'].'('.$data.');';
+		}
+
+		return $data;
+	}
+
+	protected function outputJSONHeaders(){
+		header('Content-Type:application/json');
+		header("Access-Control-Allow-Origin: *");
 	}
 
 
@@ -112,7 +126,8 @@ class Front extends \Gratheon\Core\Controller {
 		$storyModel = $this->model('Story');
 		$list       = $storyModel->getStoryListByStatus('openspace');
 
-		echo json_encode($list);
+		$this->outputJSONHeaders();
+		echo $this->wrapInJSONP(json_encode($list));
 	}
 
 
@@ -122,7 +137,8 @@ class Front extends \Gratheon\Core\Controller {
 		$list       = $storyModel->getStoryListByStatus('backlog');
 		$list       = $storyModel->postProcessStoryList($list, $this->getEmail(), $this->checkAdmin());
 
-		echo json_encode($list);
+		$this->outputJSONHeaders();
+		echo $this->wrapInJSONP(json_encode($list));
 	}
 
 
@@ -140,7 +156,8 @@ class Front extends \Gratheon\Core\Controller {
 
 		$list = $storyModel->postProcessStoryList($list, $this->getEmail(), $this->checkAdmin());
 
-		echo json_encode($list);
+		$this->outputJSONHeaders();
+		echo $this->wrapInJSONP(json_encode($list));
 	}
 
 
@@ -151,7 +168,7 @@ class Front extends \Gratheon\Core\Controller {
 
 
 		$voteCount = $vote->int("1=1", "COUNT(*)");
-		$list      = $stories->getPublicRatingStoryListOrdered($this->in->get['sort'], $this->getEmail(), $voteCount);
+		$list      = $stories->getPublicRatingStoryListOrdered($this->in->get('sort'), $this->getEmail(), $voteCount);
 
 		foreach($list as &$topic) {
 			$topic->owner = ($topic->creator_email == $this->getEmail()) || $this->checkAdmin();
@@ -160,7 +177,8 @@ class Front extends \Gratheon\Core\Controller {
 			unset($topic->creator_email);
 		}
 
-		echo json_encode($list);
+		$this->outputJSONHeaders();
+		echo $this->wrapInJSONP(json_encode($list));
 	}
 
 
@@ -184,7 +202,7 @@ class Front extends \Gratheon\Core\Controller {
 		$storyModel = $this->model('Story');
 
 		$list = $storyModel->getAuthorsByNamePart($name);
-		echo json_encode($list);
+		echo $this->wrapInJSONP(json_encode($list));
 	}
 
 	public function yearly_report() {
@@ -195,7 +213,8 @@ class Front extends \Gratheon\Core\Controller {
 		$yvotes  = $this->model('devclub_yearly_vote');
 		$results = $yvotes->arr("1=1", "devclub_yearly_vote.*, devclub_story.title", "devclub_yearly_vote INNER JOIN devclub_story ON devclub_story.id=devclub_yearly_vote.storyID");
 
-		echo json_encode($results);
+		$this->outputJSONHeaders();
+		echo $this->wrapInJSONP(json_encode($results));
 	}
 
 

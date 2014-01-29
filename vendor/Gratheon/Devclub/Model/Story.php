@@ -63,6 +63,12 @@ class Story extends \Gratheon\Core\Model {
 				$sortingSelect = 'COUNT(t2.storyID)/SUM(1/(t2.position+1)) harmonicAvg';
 				break;
 
+			case 'date':
+				$sortingOrder .= 'date_added ASC';
+				$rateVal       = 'date_added2';
+				$sortingSelect = 'DATE_FORMAT(date_added, "%Y.%m.%d") date_added2';
+				break;
+
 			case 'harmonic_weight':
 //				$voteCount  = $vote->int("1=1", "COUNT(*)");
 				$topicCount = $this->int("1=1", "COUNT(id)");
@@ -113,7 +119,7 @@ class Story extends \Gratheon\Core\Model {
 		$list = $this->q($query);
 
 		foreach($list as &$topic) {
-			if($rateVal == 'totalCount') {
+			if($rateVal == 'totalCount' || $rateVal=='date_added2') {
 				$topic->rate = $topic->{$rateVal};
 			}
 			else {

@@ -24,6 +24,7 @@
 						<li><a href="#sort/geometric">Геометрическая по позициям</a></li>
 						<li><a href="#sort/harmonic">Гармоническая по позициям</a></li>
 						<li><a href="#sort/harmonic_weight">Гармоническая взвешенная</a></li>
+						<li><a href="#sort/date">По дате добавления</a></li>
 					</ul>
 				</li>
 
