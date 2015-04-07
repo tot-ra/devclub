@@ -1,6 +1,10 @@
 <?php
 namespace Gratheon\Devclub\Controller\Front;
 
+use Facebook\FacebookRequest;
+use Facebook\FacebookSession;
+use Facebook\GraphUser;
+
 trait userAccess {
 
 	private $admins = array(
@@ -70,6 +74,19 @@ trait userAccess {
 		$this->user();
 	}
 
+	public function loginFB(){
+		$accessToken = $this->in->get('token');
+		FacebookSession::setDefaultApplication(FB_APP_ID, FB_APP_SECRET);
+		$session = new FacebookSession($accessToken);
+		$request = new FacebookRequest($session, 'GET', '/me');
+		$response = $request->execute();
+		$graphObject = $response->getGraphObject(GraphUser::className());
+		$email = $graphObject->getEmail();
+		if($email){
+			$_SESSION[__CLASS__]['auth_email'] =	$email;
+		}
+		$this->user();
+	}
 
 	public function user() {
 		echo json_encode(array(

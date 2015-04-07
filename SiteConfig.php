@@ -7,19 +7,23 @@ define('sys_url', "http://devclub.gratheon.com/");
 define('sys_url_rel', "/");
 
 
+define('FB_APP_ID', "");
+define('FB_APP_SECRET', "");
+
+
 class SiteConfig extends Gratheon\Core\Config {
 
 	public $routes = array(
-		'front'  => '/Gratheon/Devclub',
-		'content'=> '/Gratheon/CMS'
+		'front'  => '/Gratheon/Devclub'
+//		'content'=> '/Gratheon/CMS'
 	);
 
 	public $db = array(
 		0 => array(
 			'engine'    => 'PDO',
-			'server'    => '',
+			'server'    => 'localhost',
 			'database'  => 'devclub',
-			'login'     => 'devclub',
+			'login'     => '',
 			'password'  => ''
 		)
 	);

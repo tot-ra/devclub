@@ -6,8 +6,6 @@
 {include file='helpers/menu.tpl'}
 {include file='helpers/form.tpl'}
 
-
-
 <div class="alert alert-error isAdmin hidden">
 	<button class="close" data-dismiss="alert">×</button>
 	Ты теперь <strong>необычный</strong> и можешь навсегда удалять чужие доклады. Помни об ответственности,
@@ -20,7 +18,7 @@
 	<li class=""><a data-toggle="personal" href="#">Личный топ</a></li>
 	<li class=""><a data-toggle="plans" href="#">Планируется</a></li>
 	<li class=""><a data-toggle="completed" href="#">Прошедшие</a></li>
-	<li class=""><a data-toggle="openspace" href="#">Пожелания</a></li>
+	{*<li class=""><a data-toggle="openspace" href="#">Пожелания</a></li>*}
 </ul>
 
 

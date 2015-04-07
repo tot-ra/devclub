@@ -82,12 +82,12 @@ $(document).ready(function () {
 					else {
 						$('.logged_in').hide();
 						$('.logged_out').show();
-						$('.nav a.logged_out').popover({
-							'content'  : 'Войдите для голосования и добавления докладов',
-							'title'    : 'Подсказка КО',
-							'placement': 'bottom',
-							'trigger'  : 'hover'
-						}).popover('show');
+//						$('.nav a.logged_out').popover({
+//							'content'  : 'Войдите для голосования и добавления докладов',
+//							'title'    : 'Подсказка КО',
+//							'placement': 'bottom',
+//							'trigger'  : 'hover'
+//						}).popover('show');
 					}
 				}
 			});
@@ -99,6 +99,38 @@ $(document).ready(function () {
 
 		toggleForm: function () {
 			$('#story_form').toggle();
+		},
+
+		handleLoginSuccessUI: function(email){
+			$('.logged_in').show();
+			$('.logged_out').hide();
+
+			$('#personal_ul li').not('.voted').find('.vote').show();
+
+			$('.login').parents('.alert:first').hide();
+			$('#mail').html(email);
+			$('#personal_ul').parents('.col').show();
+		},
+
+		loginCallback: function(res){
+			var view = this;
+
+			if (res === null) {
+			}//loggedOut();
+			else {
+				view.handleLoginSuccessUI(res.email);
+				view.model = new Devclub.Models.User(res);
+
+				if (view.model.get('isAdmin')) {
+					$('.isAdmin').show();
+				}
+
+				Devclub.PersonalStoriesListView.collection.fetch({reset: true});
+				Devclub.CompletedStoriesListView.collection.fetch({reset: true});
+
+				makeSortable(view.model.get('isAdmin'));
+				//loggedIn(res);
+			}
 		},
 
 		login: function () {
@@ -113,33 +145,7 @@ $(document).ready(function () {
 						url    : sys_url + 'login/',
 						data   : { assertion: assertion },
 						success: function (res, status, xhr) {
-
-							if (res === null) {
-							}//loggedOut();
-							else {
-
-								$('.logged_in').show();
-								$('.logged_out').hide();
-
-								$('#personal_ul li').not('.voted').find('.vote').show();
-
-								$('.login').parents('.alert:first').hide();
-
-								$('#mail').html(res.email);
-								$('#personal_ul').parents('.col').show();
-
-								view.model = new Devclub.Models.User(res);
-
-								if (view.model.get('isAdmin')) {
-									$('.isAdmin').show();
-								}
-
-								Devclub.PersonalStoriesListView.collection.fetch({reset: true});
-								Devclub.CompletedStoriesListView.collection.fetch({reset: true});
-
-								makeSortable(view.model.get('isAdmin'));
-								//loggedIn(res);
-							}
+							view.loginCallback(res);
 						},
 						error  : function (res, status, xhr) {
 							alert("login failure" + res);
@@ -155,6 +161,8 @@ $(document).ready(function () {
 
 		logout: function () {
 			navigator.id.logout();
+			FB.logout();
+
 			$.get(sys_url + 'logout/', function () {
 //				Devclub.PersonalStoriesListView.collection.fetch();
 //				Devclub.CompletedStoriesList.collection.fetch();

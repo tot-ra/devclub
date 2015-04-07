@@ -4,9 +4,22 @@
 	{/foreach}
 </script>
 
-{foreach from=$controller->scripts item=item}
-	<script type="text/javascript" src='{$item}'></script>
-{/foreach}
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/Gratheon/Devclub/assets/js/jquery-2.0.3.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/Gratheon/Devclub/assets/js/underscore-1.5.2.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/Gratheon/Devclub/assets/js/backbone-1.1.0.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/twitter/bootstrap/js/bootstrap.min.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.core.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.widget.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.mouse.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.autocomplete.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.draggable.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.droppable.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/jquery/jquery-ui/ui/jquery.ui.sortable.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/Gratheon/Devclub/assets/js/touch-punch.js'></script>
+<script type="text/javascript" src='https://browserid.org/include.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/Gratheon/Devclub/assets/js/main.js'></script>
+<script type="text/javascript" src='http://devclub.gratheon.com/vendor/Gratheon/Devclub/assets/js/facebook.js'></script>
+
 
 {literal}
 <script type="text/javascript">

@@ -4,9 +4,6 @@
 			<a class="brand" href="#"><img src="/vendor/Gratheon/Devclub/assets/img/devclub_mini_logo.png" alt="" /> Devclub: копилка докладов</a>
 
 			<ul class="nav">
-				<li>
-					<a href="#" class="login logged_out" title="Mozilla Persona" style="{if $email}display: none;{/if}"><i class="icon-user icon-white"></i>
-						Войти</a></li>
 
 				<li>
 					<a class="story_form_trigger logged_in" href="#" style="{if !$email}display: none;{/if}"><i class="icon-plus icon-white"></i>
@@ -26,6 +23,15 @@
 						<li><a href="#sort/harmonic_weight">Гармоническая взвешенная</a></li>
 						<li><a href="#sort/date">По дате добавления</a></li>
 					</ul>
+				</li>
+
+				<li>
+					<a href="#" class="login logged_out" style="{if $email}display: none;{/if}">
+						<img style="height: 26px;" src="/vendor/Gratheon/Devclub/assets/img/persona.png"> Mozilla Persona</a>
+				</li>
+
+				<li style="padding:17px 0 0;" class="logged_out">
+					<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
 				</li>
 
 			</ul>

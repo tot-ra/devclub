@@ -1,10 +1,14 @@
 {literal}
 <script type="text/template" id="story_item_template">
 
+
+	<% if(obj.gravatar){%>
+	<img src="http://gravatar.com/avatar/<%=obj.gravatar%>?s=30" style="float:left;margin-left:-8px;margin-right:5px;border-radius:15px;"/>
+	<%}%>
+
 	<div class="leftTop">
 		<img src="/vendor/Gratheon/Devclub/assets/img/drag_icon.gif" class="draghandle" />
 		<strong class="draghandle"><%=obj.title%></strong>
-
 
 		<div style="display:none;" class="extra">
 			<em style="padding:5px 0; display:block;"><%=obj.description%></em>
@@ -22,13 +26,9 @@
 
 	<div class="leftBottom">
 		<% if(obj.status=='icebox'){ %>
-			<a class="vote btn btn-mini logged_in" href="#"><i class="icon-thumbs-up"></i></a>
-			<a class="unvote btn btn-mini logged_in" href="#"><i class="icon-minus"></i></a>
+			<a class="vote btn btn-mini logged_in" style="display:inline-block;" href="#"><i class="icon-thumbs-up"></i></a>
+			<a class="unvote btn btn-mini logged_in" style="display:inline-block;" href="#"><i class="icon-minus"></i></a>
 		<% } %>
-
-		<% if(obj.gravatar){%>
-			<img src="http://gravatar.com/avatar/<%=obj.gravatar%>?s=20" style="float:left;margin-right:5px;"/>
-		<%}%>
 		<span class="authors">
 			<%=obj.authors%>
 		</span>
