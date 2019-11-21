@@ -26,6 +26,7 @@
 <pre>($voteCount - SQRT( ($voteCount * $voteCount) - POW(COUNT(storyID),2) )) /
 ( $topicCount - SQRT( ($topicCount * $topicCount) - POW(среднее гармоническое,2)))</pre>
 
+https://www.youtube.com/watch?v=9E0bsjHOrO0
 
 Установка
 ======
